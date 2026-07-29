@@ -11,6 +11,13 @@
     <!-- Phase-change cues you can feel without looking. Granted at install time. -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- A run keeps coaching when the driver takes a call or the screen turns off:
+         the run loop is held alive by a location-type foreground service, whose
+         notification shows the current instruction. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <!--
       Genuinely required, not merely used: the app's entire function is reacting to
       ground speed, and there is nothing it can usefully do on a device without GPS. This
@@ -42,6 +49,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.RunService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
 
     </application>
 

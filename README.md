@@ -38,7 +38,17 @@ driving — twenty stops from one speed to another, with a set distance between 
 - Spoken cues, so you do not have to look at the screen at all
 - Every phase also carries a distinct chevron, so nothing depends on colour alone
 - A stop ladder across the top showing how much of the procedure is left
+- Keeps running when a call comes in or the screen turns off — the current instruction
+  stays visible in the notification, with pause and stop controls
 - Editable stages, three presets, and mph or km/h
+
+## Installing
+
+Grab `brake-bedding-<version>.apk` from the
+[latest release](https://github.com/nicglazkov/BrakeBeddingApp/releases/latest), allow
+your browser or file manager to install unknown apps when prompted, and open it. The app
+asks for precise location on first use — that is the speed source, and the only
+permission it needs to run.
 
 ## Safety
 
