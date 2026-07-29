@@ -1,84 +1,32 @@
-# Ignore Android Studio project files
-*.iml
-.idea/
+# Build output
+build/
 .gradle/
-local.properties
-
-# Ignore Gradle files
-/build/
-.externalNativeBuild/
 .cxx/
+.externalNativeBuild/
 captures/
+*.apk
+*.aab
+*.ap_
 
-# Ignore macOS files
+# Local machine configuration
+local.properties
 .DS_Store
 
-# Ignore log files
-*.log
-
-# Ignore generated files
-/generated/
-*/build/
-
-# Ignore miscellaneous files
-*.apk
-*.ap_
-*.db
-*.db-journal
-*.lock
-*.p12
-
-# Ignore ProGuard files
-proguard/
-*.pro
-
-# Ignore IntelliJ project-specific files
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/assetWizardSettings.xml
-.idea/dictionaries
-.idea/libraries
-
-# Ignore JetBrains .idea files (metadata)
-.idea/modules.xml
-.idea/navEditor.xml
-.idea/.name
-
-# Ignore dependency caches (unnecessary)
-.idea/caches/
-.idea/httpRequests/
-.idea/jsLibraryMappings.xml
-.idea/gradle.xml
-
-# Ignore Android Studio specific cache
-/.idea/caches/
-/.idea/libraries/
-/.idea/modules.xml
-.idea/assetsWizardSettings.xml
-.idea/navEditor.xml
-
-# Ignore local keystore files (useful for signing)
+# Signing material. The keystore itself lives outside the repository; this is a second
+# line of defence in case one is ever generated in place.
+keystore.properties
 *.jks
 *.keystore
+*.p12
 
-# Ignore Kotlin/JS build folders
-build/js/
+# NOTE: do not add a blanket *.pro rule here. It matches app/proguard-rules.pro, which
+# is a source file the release build needs, and its absence only shows up as a broken
+# minified build long after the fact.
 
-# Ignore NDK directories
-**/obj/
-**/libs/
+# IDE
+*.iml
+.idea/
+!.idea/codeStyles/
 
-# Ignore virtual environment for Python (if any)
-.venv/
-
-# Ignore Firebase files
-google-services.json
-
-# Ignore Yarn and Node files
-node_modules/
-yarn-error.log
-yarn.lock
-/app/release/baselineProfiles/0/app-release.dm
-/app/release/baselineProfiles/1/app-release.dm
-/app/release/output-metadata.json
-/repomix-output.txt
+# Session scratch
+.remember/
