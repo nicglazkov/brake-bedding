@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -120,9 +121,13 @@ fun RunScreen(
     }
 
     // The screen must stay awake through a procedure that can run half an hour with no
-    // touch input at all.
+    // touch input at all. Written in a SideEffect because composition itself must not
+    // mutate the view; the flag also clears when the run ends, so a finished procedure
+    // does not pin the screen on in a parked car.
     val keepAwake = state.settings.keepScreenOn && state.run.phase.isRunning
-    if (view.keepScreenOn != keepAwake) view.keepScreenOn = keepAwake
+    SideEffect {
+        if (view.keepScreenOn != keepAwake) view.keepScreenOn = keepAwake
+    }
 
     Box(
         modifier = Modifier
@@ -198,32 +203,60 @@ private fun InstrumentView(
             SignalNotice(state.signal, onField)
         }
 
-        Column(
+        // The centre stack is sized against the height it actually gets: in landscape the
+        // full-size glyph, verb and readout add up to more than the viewport, and a plain
+        // Column hands the shortfall to its last child — which silently squeezed the
+        // target readout, the one number the instruction refers to, to zero height.
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
         ) {
-            PhaseGlyph(
-                phase = state.run.phase,
-                tint = onField,
-                modifier = Modifier.size(width = 108.dp, height = 78.dp),
-            )
-            Spacer(Modifier.height(18.dp))
-            Text(
-                text = verbFor(state.run.phase),
-                style = instrumentVerb,
-                color = onField,
-            )
-            readoutFor(state, units)?.let { (value, label) ->
-                Spacer(Modifier.height(6.dp))
-                Text(text = value, style = instrumentReadout, color = onField)
-                Text(
-                    text = label,
-                    style = instrumentLabel,
-                    color = onField.copy(alpha = 0.75f),
+            val compact = maxHeight < 340.dp
+            // Worst case is landscape with the GPS notice showing: roughly 160dp for
+            // this stack, so the compact metrics are sized to fit that with the label
+            // still visible rather than tuned to the roomy portrait case.
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                PhaseGlyph(
+                    phase = state.run.phase,
+                    tint = onField,
+                    modifier = if (compact) {
+                        Modifier.size(width = 52.dp, height = 34.dp)
+                    } else {
+                        Modifier.size(width = 108.dp, height = 78.dp)
+                    },
                 )
+                Spacer(Modifier.height(if (compact) 6.dp else 18.dp))
+                Text(
+                    text = verbFor(state.run.phase),
+                    style = if (compact) {
+                        instrumentVerb.copy(fontSize = 34.sp, lineHeight = 36.sp)
+                    } else {
+                        instrumentVerb
+                    },
+                    color = onField,
+                )
+                readoutFor(state, units)?.let { (value, label) ->
+                    Spacer(Modifier.height(if (compact) 2.dp else 6.dp))
+                    Text(
+                        text = value,
+                        style = if (compact) {
+                            instrumentReadout.copy(fontSize = 52.sp, lineHeight = 52.sp)
+                        } else {
+                            instrumentReadout
+                        },
+                        color = onField,
+                    )
+                    Text(
+                        text = label,
+                        style = instrumentLabel,
+                        color = onField.copy(alpha = 0.75f),
+                    )
+                }
             }
         }
 

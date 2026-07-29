@@ -13,6 +13,10 @@ private val LightColors = lightColorScheme(
     onPrimaryContainer = EmberDeep,
     secondary = androidx.compose.ui.graphics.Color(0xFF6F5F57),
     onSecondary = androidx.compose.ui.graphics.Color.White,
+    // Segmented buttons and filter chips fill with secondaryContainer; left undefined it
+    // falls back to the baseline purple, which reads as another product's accent.
+    secondaryContainer = androidx.compose.ui.graphics.Color(0xFFF6DED0),
+    onSecondaryContainer = androidx.compose.ui.graphics.Color(0xFF4A3427),
     background = Bone,
     onBackground = Ink,
     surface = Bone,
@@ -33,6 +37,8 @@ private val DarkColors = darkColorScheme(
     onPrimaryContainer = androidx.compose.ui.graphics.Color(0xFFFFE1D2),
     secondary = androidx.compose.ui.graphics.Color(0xFFD8C6BC),
     onSecondary = androidx.compose.ui.graphics.Color(0xFF3B2D26),
+    secondaryContainer = androidx.compose.ui.graphics.Color(0xFF564439),
+    onSecondaryContainer = androidx.compose.ui.graphics.Color(0xFFF3DFD3),
     background = Graphite,
     onBackground = androidx.compose.ui.graphics.Color(0xFFEDE0D9),
     surface = Graphite,

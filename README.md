@@ -1,4 +1,15 @@
-# Brake Bedding
+<p align="center">
+  <img src="store/play-icon-512.png" width="112" alt="Brake Bedding icon: a drilled brake rotor on a heat gradient" />
+</p>
+
+<h1 align="center">Brake Bedding</h1>
+
+<p align="center">
+  <a href="https://github.com/nicglazkov/BrakeBeddingApp/actions/workflows/build.yml"><img src="https://github.com/nicglazkov/BrakeBeddingApp/actions/workflows/build.yml/badge.svg" alt="Build status" /></a>
+  <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android 8.0+" />
+  <img src="https://img.shields.io/badge/Kotlin-Compose-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin + Jetpack Compose" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0" /></a>
+</p>
 
 An Android app that coaches you through bedding in new brake pads and rotors, using your
 phone's GPS to know when you have hit the speed a stage is asking for.
