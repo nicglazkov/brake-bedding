@@ -54,12 +54,32 @@ private fun BrakeBeddingApp() {
         contract = ActivityResultContracts.RequestMultiplePermissions(),
     ) { runViewModel.refreshPermissionState() }
 
+    // The run's foreground-service notification needs POST_NOTIFICATIONS on 33+. Asked
+    // for at the moment it becomes relevant — the first Start — and the run proceeds
+    // whatever the answer; denial only costs the shade notification, not the service.
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val notificationLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { runViewModel.start() }
+    val startRun: () -> Unit = {
+        val needsAsk = android.os.Build.VERSION.SDK_INT >= 33 &&
+            androidx.core.content.ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (needsAsk) {
+            notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            runViewModel.start()
+        }
+    }
+
     NavHost(navController = navController, startDestination = Routes.RUN) {
         composable(Routes.RUN) {
             val state by runViewModel.state.collectAsStateWithLifecycle()
             RunScreen(
                 state = state,
-                onStart = runViewModel::start,
+                onStart = startRun,
                 onPause = runViewModel::pause,
                 onResume = runViewModel::resume,
                 onStop = runViewModel::stop,

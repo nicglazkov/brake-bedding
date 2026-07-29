@@ -47,8 +47,8 @@ import com.glazkov.brakebedding.data.CooldownStage
 import com.glazkov.brakebedding.data.UnitSystem
 import com.glazkov.brakebedding.engine.BeddingEngine
 import com.glazkov.brakebedding.engine.RunPhase
+import com.glazkov.brakebedding.service.SignalStatus
 import com.glazkov.brakebedding.ui.RunUiState
-import com.glazkov.brakebedding.ui.SignalStatus
 import com.glazkov.brakebedding.ui.components.DrainBar
 import com.glazkov.brakebedding.ui.components.PhaseGlyph
 import com.glazkov.brakebedding.ui.components.StopLadder
