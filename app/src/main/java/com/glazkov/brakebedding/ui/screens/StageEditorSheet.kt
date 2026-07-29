@@ -212,7 +212,11 @@ private fun NumberField(
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = { text -> onValueChange(text.filter { it.isDigit() || it == '.' }) },
+        // Decimal-comma locales put a comma on the numeric keyboard; treating it as a
+        // decimal point lets those users type fractions instead of silently losing the key.
+        onValueChange = { text ->
+            onValueChange(text.replace(',', '.').filter { it.isDigit() || it == '.' })
+        },
         label = { Text(label) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
