@@ -24,7 +24,7 @@ actual object RunSessionSupport {
 
     actual fun onRunStarted() {
         iosSpeedSource.setBackgroundUpdates(true)
-        LiveActivityBridge.onStart?.invoke()
+        LiveActivityBridge.onStart?.invoke(Run.controller.state.value.procedure.name)
         observe()
     }
 
@@ -74,7 +74,7 @@ data class RunActivityContent(
  * time. Swift also calls the run controls directly through [Run.controller].
  */
 object LiveActivityBridge {
-    var onStart: (() -> Unit)? = null
+    var onStart: ((String) -> Unit)? = null
     var onUpdate: ((RunActivityContent) -> Unit)? = null
     var onEnd: (() -> Unit)? = null
 }

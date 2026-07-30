@@ -17,8 +17,8 @@ final class LiveActivityManager {
         RunIntentHandlers.togglePause = { controller.togglePause() }
         RunIntentHandlers.stop = { controller.stop() }
 
-        LiveActivityBridge.shared.onStart = { [weak self] in
-            self?.start(procedureName: controller.state.value.procedure.name)
+        LiveActivityBridge.shared.onStart = { [weak self] procedureName in
+            self?.start(procedureName: procedureName)
         }
         LiveActivityBridge.shared.onUpdate = { [weak self] content in
             self?.update(content: content)

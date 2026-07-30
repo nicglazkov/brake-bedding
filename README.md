@@ -11,8 +11,10 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0" /></a>
 </p>
 
-Brake Bedding is an Android app. It helps you bed in new brake pads and rotors. The app
-reads your speed from GPS. It shows and speaks each instruction at the correct time.
+Brake Bedding is an app for Android and iOS. It helps you bed in new brake pads and
+rotors. The app reads your speed from GPS. It shows and speaks each instruction at the
+correct time. One Kotlin Multiplatform codebase supplies the two apps, so the two
+platforms have the same engine, the same screens, and the same texts.
 
 Brake bedding puts a thin, equal layer of pad material on the rotor surface. It also
 heats the pads in controlled cycles. Correct bedding gives brakes that are quiet and
@@ -45,6 +47,8 @@ stops from one speed to a lower speed, with a set distance between the stops.
 
 ## Installation
 
+### Android
+
 1. Download `brake-bedding-<version>.apk` from the
    [latest release](https://github.com/nicglazkov/brake-bedding/releases/latest).
 2. If the device asks for it, give your browser or file manager permission to install
@@ -52,6 +56,13 @@ stops from one speed to a lower speed, with a set distance between the stops.
 3. Open the file to install the app.
 4. Give the app access to your accurate location when it asks. This is the speed source.
    The app does not use other permissions to operate.
+
+### iOS
+
+The iOS app comes through TestFlight. The public TestFlight link will be in this
+section when Apple completes the beta review. On iOS, the run instruction also shows
+as a Live Activity on the Lock Screen and in the Dynamic Island, with Pause and Stop
+buttons.
 
 ## Safety
 
@@ -97,15 +108,20 @@ stops until the signal is available again.
 
 ## How the app operates
 
-The important part is `engine/BeddingEngine.kt`. It is a pure function, with no Android
-imports, no timers, and no callbacks. It gets a state and an event, and it returns the
-subsequent state. Because of this, a test can do a full run of thirty stops in
-microseconds, without a device.
+The important part is `engine/BeddingEngine.kt`. It is a pure function, with no
+platform imports, no timers, and no callbacks. It gets a state and an event, and it
+returns the subsequent state. Because of this, a test can do a full run of thirty
+stops in microseconds, without a device. The same tests run on the JVM and on the iOS
+simulator.
 
 ```
-LocationSpeedSource ──▶ RunController ──▶ BeddingEngine ──▶ RunState ──▶ RunScreen
-   (GPS data)           (4 Hz timing,     (pure reducer)                 (Compose)
-                         signal checks)
+SpeedSource ──▶ RunController ──▶ BeddingEngine ──▶ RunState ──▶ RunScreen (Compose)
+ (GPS data)     (4 Hz timing,     (pure reducer)
+                 signal checks)
+
+shared/     the engine, the data layer, the screens, and the controller (common code)
+androidApp/ the activity, the foreground service, and the Android resources
+iosApp/     the Swift host, background location, and the Live Activity
 ```
 
 Two design points:
@@ -122,17 +138,25 @@ same.
 
 ## Build instructions
 
-You must have JDK 17 or newer. The Gradle wrapper downloads the other components.
+You must have JDK 17 or newer. The Gradle wrapper downloads the other components. The
+iOS build also uses a Mac with Xcode 26 and xcodegen.
 
 ```bash
 git clone https://github.com/nicglazkov/brake-bedding.git
 cd brake-bedding
-./gradlew assembleDebug          # The APK goes to app/build/outputs/apk/debug/
-./gradlew testDebugUnitTest      # The unit tests
+
+# Android
+./gradlew :androidApp:assembleDebug   # The APK goes to androidApp/build/outputs/apk/debug/
+./gradlew :shared:testAndroidHostTest # The common tests on the JVM
+
+# iOS
+./gradlew :shared:iosSimulatorArm64Test   # The common tests on the iOS simulator
+cd iosApp && xcodegen generate            # Makes BrakeBedding.xcodeproj
+# Then build the BrakeBedding scheme in Xcode, or with xcodebuild.
 ```
 
-The minimum version is Android 8.0 (API 26). The app compiles against API 37 and has a
-target of API 36.
+The minimum versions are Android 8.0 (API 26) and iOS 17. The Android app compiles
+against API 37 and has a target of API 36.
 
 ### Release signing
 
