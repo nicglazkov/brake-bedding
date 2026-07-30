@@ -5,7 +5,7 @@
 <h1 align="center">Brake Bedding</h1>
 
 <p align="center">
-  <a href="https://github.com/nicglazkov/BrakeBeddingApp/actions/workflows/build.yml"><img src="https://github.com/nicglazkov/BrakeBeddingApp/actions/workflows/build.yml/badge.svg" alt="Build status" /></a>
+  <a href="https://github.com/nicglazkov/brake-bedding/actions/workflows/build.yml"><img src="https://github.com/nicglazkov/brake-bedding/actions/workflows/build.yml/badge.svg" alt="Build status" /></a>
   <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android 8.0+" />
   <img src="https://img.shields.io/badge/Kotlin-Compose-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin + Jetpack Compose" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0" /></a>
@@ -45,7 +45,7 @@ driving — twenty stops from one speed to another, with a set distance between 
 ## Installing
 
 Grab `brake-bedding-<version>.apk` from the
-[latest release](https://github.com/nicglazkov/BrakeBeddingApp/releases/latest), allow
+[latest release](https://github.com/nicglazkov/brake-bedding/releases/latest), allow
 your browser or file manager to install unknown apps when prompted, and open it. The app
 asks for precise location on first use — that is the speed source, and the only
 permission it needs to run.
@@ -119,8 +119,8 @@ used for both reading and writing, so the stored form and the parsed form cannot
 Requires JDK 17 or newer. Everything else is fetched by the Gradle wrapper.
 
 ```bash
-git clone https://github.com/nicglazkov/BrakeBeddingApp.git
-cd BrakeBeddingApp
+git clone https://github.com/nicglazkov/brake-bedding.git
+cd brake-bedding
 ./gradlew assembleDebug          # APK at app/build/outputs/apk/debug/
 ./gradlew testDebugUnitTest      # unit tests
 ```
