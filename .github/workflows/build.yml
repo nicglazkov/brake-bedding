@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  android:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,27 +29,60 @@ jobs:
         run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
 
       - name: Unit tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: ./gradlew :shared:testAndroidHostTest --stacktrace
 
       - name: Lint
-        run: ./gradlew lintDebug --stacktrace
+        run: ./gradlew :androidApp:lintDebug --stacktrace
 
       # CI has no keystore.properties file. Because of this, the release variant has
       # no signature. This is intentional. It shows that the project builds without
       # the data that only the maintainer has.
       - name: Assemble
-        run: ./gradlew assembleDebug assembleRelease --stacktrace
+        run: ./gradlew :androidApp:assembleDebug :androidApp:assembleRelease --stacktrace
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: androidApp/build/outputs/apk/debug/androidApp-debug.apk
           if-no-files-found: error
 
       - name: Upload test report
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-report
-          path: app/build/reports/tests/
+          name: android-test-report
+          path: shared/build/reports/tests/
+
+  ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Compile the shared framework
+        run: ./gradlew :shared:compileKotlinIosSimulatorArm64 --stacktrace
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        run: cd iosApp && xcodegen generate
+
+      # The build runs without a signature. This shows that the project builds
+      # without the data that only the maintainer has.
+      - name: Build the iOS app
+        run: |
+          cd iosApp
+          xcodebuild -project BrakeBedding.xcodeproj -scheme BrakeBedding \
+            -destination "generic/platform=iOS Simulator" \
+            -configuration Debug build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY=""

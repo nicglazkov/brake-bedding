@@ -1,0 +1,71 @@
+# The Xcode project definition. Make the project with: xcodegen generate
+name: BrakeBedding
+options:
+  bundleIdPrefix: com.glazkov
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    DEVELOPMENT_TEAM: W4PACKJ894
+    SWIFT_VERSION: "5.9"
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    TARGETED_DEVICE_FAMILY: "1"
+
+targets:
+  BrakeBedding:
+    type: application
+    platform: iOS
+    sources:
+      - path: BrakeBedding
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.glazkov.brakebedding
+        INFOPLIST_FILE: BrakeBedding/Info.plist
+        MARKETING_VERSION: "2.2"
+        CURRENT_PROJECT_VERSION: "1"
+        FRAMEWORK_SEARCH_PATHS:
+          - "$(inherited)"
+          - "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
+        OTHER_LDFLAGS:
+          - "$(inherited)"
+          - "-framework"
+          - "Shared"
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+    preBuildScripts:
+      - name: Compile Kotlin Framework
+        script: |
+          cd "$SRCROOT/.."
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode
+        basedOnDependencyAnalysis: false
+    dependencies:
+      - target: BrakeBeddingWidgets
+        embed: true
+
+  BrakeBeddingWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.glazkov.brakebedding.Widgets
+        INFOPLIST_FILE: Widgets/Info.plist
+        MARKETING_VERSION: "2.2"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGN_STYLE: Automatic
+        SKIP_INSTALL: YES
+
+schemes:
+  BrakeBedding:
+    build:
+      targets:
+        BrakeBedding: all
+    run:
+      config: Debug
+    archive:
+      config: Release
