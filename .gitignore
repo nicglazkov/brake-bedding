@@ -12,21 +12,21 @@ captures/
 local.properties
 .DS_Store
 
-# Signing material. The keystore itself lives outside the repository; this is a second
-# line of defence in case one is ever generated in place.
+# Signature data. The keystore stays out of the repository. These rules are a second
+# protection if a keystore appears in the project folder.
 keystore.properties
 *.jks
 *.keystore
 *.p12
 
-# NOTE: do not add a blanket *.pro rule here. It matches app/proguard-rules.pro, which
-# is a source file the release build needs, and its absence only shows up as a broken
-# minified build long after the fact.
+# NOTE: do not add a *.pro rule here. It applies to app/proguard-rules.pro, which is
+# a source file that the release build uses. Its absence shows only much later, as an
+# unserviceable minified build.
 
 # IDE
 *.iml
 .idea/
 !.idea/codeStyles/
 
-# Session scratch
+# Session data
 .remember/

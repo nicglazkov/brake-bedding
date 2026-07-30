@@ -1,5 +1,5 @@
-# kotlinx.serialization generates companion serializers that are only reached
-# reflectively from the plugin-generated lookup, so R8 cannot see the link itself.
+# kotlinx.serialization makes companion serializers. Only a generated lookup uses
+# them, with reflection. R8 cannot see that connection.
 -keepattributes *Annotation*, InnerClasses
 -dontnote kotlinx.serialization.**
 
@@ -10,10 +10,10 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
-# The sealed Stage hierarchy is resolved by its @SerialName discriminator at runtime.
+# The app finds the correct Stage type from its @SerialName value at run time.
 -keep,includedescriptorclasses class com.glazkov.brakebedding.data.Stage
 -keep,includedescriptorclasses class com.glazkov.brakebedding.data.**$$serializer { *; }
 
-# Line numbers make Play Console crash reports readable while still obfuscating names.
+# The line numbers make Play Console crash reports readable. The names stay hidden.
 -keepattributes SourceFile,LineNumberTable
 -renamesourcefileattribute SourceFile

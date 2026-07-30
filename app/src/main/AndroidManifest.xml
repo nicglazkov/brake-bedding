@@ -2,26 +2,28 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Speed comes from GPS Doppler, which needs fine location. Coarse location is
-         declared too so the permission dialog can offer the approximate option, but the
-         app tells the user why that will not work well. -->
+    <!-- The speed comes from GPS. That is possible only with the fine location
+         permission. The coarse permission is also declared. Then the dialog can show
+         the approximate option, and the app can tell the user why it is not
+         sufficient. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- Phase-change cues you can feel without looking. Granted at install time. -->
+    <!-- Vibration cues for the instructions. Android gives this permission at
+         installation. -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <!-- A run keeps coaching when the driver takes a call or the screen turns off:
-         the run loop is held alive by a location-type foreground service, whose
-         notification shows the current instruction. -->
+    <!-- The run continues when the driver gets a call or when the screen goes off.
+         A foreground service of the location type keeps the run loop alive. Its
+         notification shows the applicable instruction. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!--
-      Genuinely required, not merely used: the app's entire function is reacting to
-      ground speed, and there is nothing it can usefully do on a device without GPS. This
-      does filter such devices out on Play, which is the intended outcome.
+      GPS is necessary, not optional. The full function of the app is a reaction to
+      the ground speed. On a device without GPS, the app has no use. Play does not
+      show the app to those devices. That is the intended result.
     -->
     <uses-feature
         android:name="android.hardware.location.gps"

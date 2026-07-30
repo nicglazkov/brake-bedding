@@ -4,28 +4,28 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
-/** How hard the driver is asked to press the pedal during a bedding stage. */
+/** The brake force that the app tells the driver to use in a bedding stage. */
 @Serializable
 enum class BrakingIntensity(val displayName: String, val shortName: String) {
     LIGHT("Light braking", "Light"),
     MODERATE("Moderate braking", "Moderate"),
     FIRM("Firm braking", "Firm"),
-    THRESHOLD("Hard, just short of ABS", "Threshold"),
-    ABS("Hard enough to trigger ABS", "ABS"),
+    THRESHOLD("Threshold braking", "Threshold"),
+    ABS("ABS braking", "ABS"),
 }
 
 /**
  * One step of a procedure.
  *
- * This is a sealed hierarchy with a single generated polymorphic serializer, so the
- * stored form and the parsed form can never disagree about what a stage is. The previous
- * implementation wrote stages through a hand-written Gson adapter but read them back
- * through a plain `List<BeddingStage>` binding, which silently turned every cooldown
- * stage into an all-zero bedding stage.
+ * This is a sealed hierarchy with one generated serializer. Because of this, the
+ * stored form and the parsed form always agree about the type of a stage. The first
+ * implementation wrote stages with a manual Gson adapter, but read them as a
+ * `List<BeddingStage>`. That changed each cooldown stage into a bedding stage with
+ * all values at zero.
  */
 @Serializable
 sealed interface Stage {
-    /** Stable across edits and reorders so list UIs can key on it. */
+    /** This value does not change when the user edits or moves stages. Lists use it as a key. */
     val id: String
 }
 
@@ -59,7 +59,7 @@ data class CooldownStage(
     }
 }
 
-/** A complete, runnable bedding procedure. */
+/** A full bedding procedure that the app can run. */
 @Serializable
 data class Procedure(
     val name: String = "My procedure",
@@ -69,15 +69,15 @@ data class Procedure(
 
     val beddingStages: List<BeddingStage> get() = stages.filterIsInstance<BeddingStage>()
 
-    /** Total number of individual stops, used for the run progress indicator. */
+    /** The total number of stops. The progress bar uses this value. */
     val totalStops: Int get() = beddingStages.sumOf { it.numberOfStops }
 
     val hasCooldown: Boolean get() = stages.any { it is CooldownStage }
 
     /**
-     * Rough lower bound on how far the driver needs to travel. Gap distances and the
-     * cooldown are exact; the accelerate/brake portion of each stop is not modelled, so
-     * the real distance is always somewhat higher.
+     * The approximate minimum distance for the procedure. The gap distances and the
+     * cooldown are exact. The calculation does not include the distance for the
+     * speed changes. Because of this, the real distance is always more.
      */
     val minimumDistanceMeters: Double
         get() = stages.sumOf { stage ->

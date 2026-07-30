@@ -86,17 +86,17 @@ private fun BeddingForm(
     val targetValue = target.toDoubleOrNull()
     val gapValue = gap.toDoubleOrNull() ?: 0.0
 
-    // The error text names the fix, not the rule that was broken.
+    // The error text tells the user what to do. It does not name the broken rule.
     val problem = when {
-        stopsValue == null || stopsValue <= 0 -> "Enter how many stops this stage should do"
-        startValue == null || targetValue == null -> "Enter both speeds"
-        startValue <= targetValue -> "Start speed has to be higher than the speed you brake down to"
-        gapValue < 0 -> "Distance between stops cannot be negative"
+        stopsValue == null || stopsValue <= 0 -> "Enter the number of stops for this stage"
+        startValue == null || targetValue == null -> "Enter the two speeds"
+        startValue <= targetValue -> "Enter a start speed that is more than the target speed"
+        gapValue < 0 -> "Enter a distance of zero or more"
         else -> null
     }
 
     Text(
-        text = if (existing == null) "New bedding stage" else "Edit bedding stage",
+        text = if (existing == null) "New bedding stage" else "Edit the bedding stage",
         style = MaterialTheme.typography.titleLarge,
     )
     Spacer(Modifier.height(16.dp))
@@ -104,8 +104,8 @@ private fun BeddingForm(
     NumberField(stops, { stops = it }, "Number of stops", keyboardType = KeyboardType.Number)
     Spacer(Modifier.height(12.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        NumberField(start, { start = it }, "From (${units.speedLabel})", modifier = Modifier.weight(1f))
-        NumberField(target, { target = it }, "Down to (${units.speedLabel})", modifier = Modifier.weight(1f))
+        NumberField(start, { start = it }, "Start speed (${units.speedLabel})", modifier = Modifier.weight(1f))
+        NumberField(target, { target = it }, "Target speed (${units.speedLabel})", modifier = Modifier.weight(1f))
     }
     Spacer(Modifier.height(12.dp))
     NumberField(gap, { gap = it }, "Distance between stops (${units.distanceLabel})")
@@ -146,7 +146,7 @@ private fun BeddingForm(
             .fillMaxWidth()
             .height(56.dp),
     ) {
-        Text(if (existing == null) "Add stage" else "Save changes")
+        Text(if (existing == null) "Add the stage" else "Save the changes")
     }
 }
 
@@ -161,18 +161,19 @@ private fun CooldownForm(
     }
     val value = distance.toDoubleOrNull()
     val problem = when {
-        value == null || value <= 0 -> "Enter how far to drive while the brakes cool"
+        value == null || value <= 0 -> "Enter the distance for the cooldown"
         else -> null
     }
 
     Text(
-        text = if (existing == null) "New cooldown" else "Edit cooldown",
+        text = if (existing == null) "New cooldown" else "Edit the cooldown",
         style = MaterialTheme.typography.titleLarge,
     )
     Spacer(Modifier.height(8.dp))
     Text(
-        text = "Drive this far without heavy braking so the pads and rotors shed heat " +
-            "evenly. Coming to a stop on hot brakes is what leaves pad deposits behind.",
+        text = "Drive this distance with minimum braking. This lets the pads and the " +
+            "rotors become cool. A stop on hot brakes causes unwanted pad material on " +
+            "the rotor surface.",
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -198,7 +199,7 @@ private fun CooldownForm(
             .fillMaxWidth()
             .height(56.dp),
     ) {
-        Text(if (existing == null) "Add cooldown" else "Save changes")
+        Text(if (existing == null) "Add the cooldown" else "Save the changes")
     }
 }
 
@@ -212,8 +213,8 @@ private fun NumberField(
 ) {
     OutlinedTextField(
         value = value,
-        // Decimal-comma locales put a comma on the numeric keyboard; treating it as a
-        // decimal point lets those users type fractions instead of silently losing the key.
+        // Some locales have a comma on the number keyboard. The app uses the comma as
+        // a decimal point. Then those users can type fractions.
         onValueChange = { text ->
             onValueChange(text.replace(',', '.').filter { it.isDigit() || it == '.' })
         },
@@ -225,12 +226,11 @@ private fun NumberField(
 }
 
 /**
- * Trims trailing zeroes so a field shows "42" rather than "42.0".
+ * Removes the zeros at the end. Then a field shows "42", not "42.0".
  *
- * Formatted with [Locale.ROOT] rather than the user's locale, because this value goes
- * straight into an editable field that is read back with `toDoubleOrNull`. A locale that
- * writes a decimal comma would produce a field the app could no longer parse, and the
- * stage would silently refuse to save.
+ * The format uses [Locale.ROOT], not the locale of the user. This value goes into an
+ * input field, and `toDoubleOrNull` reads it again. A locale with a decimal comma
+ * would make a field that the app cannot parse. Then the save would not operate.
  */
 private fun Double.round(decimals: Int = 0): String {
     val text = String.format(Locale.ROOT, "%.${decimals}f", this)

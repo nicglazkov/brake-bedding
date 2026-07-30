@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  A vented brake rotor.
+  A brake rotor with holes.
 
-  Circles are written as two explicit half-arcs, "M cx-r,cy a r,r 0 1,0 2r,0 a r,r 0 1,0
-  -2r,0", so each one is anchored on its own centre. The shorter degenerate-arc form
-  places the circle relative to its start point instead, which silently shifts every
-  shape by its own radius and pulls a symmetrical ring of holes out of true.
+  Each circle is two explicit half arcs: "M cx-r,cy a r,r 0 1,0 2r,0 a r,r 0 1,0
+  -2r,0". Then each circle has its anchor on its own center. The shorter arc form
+  puts the circle relative to its start point. That moves each shape by its own
+  radius, and the ring of holes is then not symmetrical.
 
-  The disc and its cooling holes share one evenOdd path so the holes are genuinely
-  transparent and the adaptive background shows through them as the launcher parallaxes
-  the layers. Everything sits inside the 66dp safe zone of the 108dp canvas.
+  The disc and its holes are one evenOdd path. Then the holes are transparent, and
+  the adaptive background shows through them when the launcher moves the layers. All
+  shapes stay in the 66 dp safe zone of the 108 dp canvas.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
@@ -17,7 +17,7 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Rotor face, with eight drilled cooling holes punched out on a 21-unit radius. -->
+    <!-- The rotor face, with eight holes on a radius of 21 units. -->
     <path
         android:fillColor="#EDEAE7"
         android:fillType="evenOdd"
@@ -31,19 +31,19 @@
                           M50.6,33 a3.4,3.4 0 1,0 6.8,0 a3.4,3.4 0 1,0 -6.8,0 Z
                           M65.45,39.15 a3.4,3.4 0 1,0 6.8,0 a3.4,3.4 0 1,0 -6.8,0 Z" />
 
-    <!-- Machined swept band, a shade darker than the face. -->
+    <!-- The friction band. It is darker than the face. -->
     <path
         android:fillColor="#C9C4BF"
         android:fillType="evenOdd"
         android:pathData="M26,54 a28,28 0 1,0 56,0 a28,28 0 1,0 -56,0 Z
                           M30,54 a24,24 0 1,0 48,0 a24,24 0 1,0 -48,0 Z" />
 
-    <!-- Centre hat. -->
+    <!-- The center hat. -->
     <path
         android:fillColor="#A8A29E"
         android:pathData="M40,54 a14,14 0 1,0 28,0 a14,14 0 1,0 -28,0 Z" />
 
-    <!-- Five lug holes on a 9-unit radius. -->
+    <!-- Five lug holes on a radius of 9 units. -->
     <path
         android:fillColor="#78716C"
         android:pathData="M51.9,45 a2.1,2.1 0 1,0 4.2,0 a2.1,2.1 0 1,0 -4.2,0 Z
@@ -52,7 +52,7 @@
                           M46.61,61.28 a2.1,2.1 0 1,0 4.2,0 a2.1,2.1 0 1,0 -4.2,0 Z
                           M43.34,51.22 a2.1,2.1 0 1,0 4.2,0 a2.1,2.1 0 1,0 -4.2,0 Z" />
 
-    <!-- Wheel bore. -->
+    <!-- The center bore. -->
     <path
         android:fillColor="#57534E"
         android:pathData="M48,54 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 Z" />

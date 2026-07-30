@@ -59,12 +59,12 @@ import com.glazkov.brakebedding.ui.theme.instrumentTelemetry
 import com.glazkov.brakebedding.ui.theme.instrumentVerb
 
 /**
- * The screen a driver looks at.
+ * The screen for the driver.
  *
- * It deliberately leaves Material 3's surface-and-card idiom behind: there is no app bar,
- * no elevation and no container, because the entire window is the signal. Everything
- * else in the app stays inside Material, which is the right idiom for a form you fill in
- * while parked.
+ * This screen does not use the usual Material 3 surfaces and cards. It has no app
+ * bar, no elevation, and no container. The full window is the signal. The other
+ * screens use Material. That is correct for forms that you use when the vehicle is
+ * parked.
  */
 @Composable
 fun RunScreen(
@@ -80,9 +80,9 @@ fun RunScreen(
     onRequestPermission: () -> Unit,
     onRefreshPermissionState: () -> Unit,
 ) {
-    // Location can be granted, or GPS switched on, from system settings while the app is
-    // in the background, so the state is re-read on every resume rather than only after
-    // the in-app permission dialog.
+    // The user can give access to the location in the system settings while the app
+    // is not on the screen. Because of this, the app reads the state again at each
+    // resume, not only after the permission dialog.
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -108,7 +108,8 @@ fun RunScreen(
         palette.onField
     }
 
-    // System bar icons have to follow the phase colour, or they vanish against amber.
+    // The system bar icons must agree with the phase color. If they do not, they are
+    // not visible on the amber field.
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -120,10 +121,10 @@ fun RunScreen(
         }
     }
 
-    // The screen must stay awake through a procedure that can run half an hour with no
-    // touch input at all. Written in a SideEffect because composition itself must not
-    // mutate the view; the flag also clears when the run ends, so a finished procedure
-    // does not pin the screen on in a parked car.
+    // The screen must stay on through a procedure of possibly 30 minutes with no
+    // touch input. The write is in a SideEffect because composition must not change
+    // the view. The flag also goes off when the run ends. Then the screen of a
+    // parked vehicle can go off.
     val keepAwake = state.settings.keepScreenOn && state.run.phase.isRunning
     SideEffect {
         if (view.keepScreenOn != keepAwake) view.keepScreenOn = keepAwake
@@ -203,19 +204,19 @@ private fun InstrumentView(
             SignalNotice(state.signal, onField)
         }
 
-        // The centre stack is sized against the height it actually gets: in landscape the
-        // full-size glyph, verb and readout add up to more than the viewport, and a plain
-        // Column hands the shortfall to its last child — which silently squeezed the
-        // target readout, the one number the instruction refers to, to zero height.
+        // The center stack measures the height that it gets. In landscape, the
+        // full-size symbol, command, and readout are higher than the viewport. A
+        // simple Column then decreases the height of its last child. That made the
+        // target readout not visible.
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
         ) {
             val compact = maxHeight < 340.dp
-            // Worst case is landscape with the GPS notice showing: roughly 160dp for
-            // this stack, so the compact metrics are sized to fit that with the label
-            // still visible rather than tuned to the roomy portrait case.
+            // The worst condition is landscape with the GPS message. Then this stack
+            // gets approximately 160 dp. The compact sizes go into that height with
+            // the label visible.
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -278,7 +279,7 @@ private fun InstrumentView(
         ) {
             Telemetry(
                 value = units.formatSpeed(state.speedMps),
-                label = "now ${units.speedLabel}",
+                label = "speed ${units.speedLabel}",
                 onField = onField,
             )
             (stage as? BeddingStage)?.let {
@@ -298,13 +299,13 @@ private fun InstrumentView(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             FieldButton(
-                text = if (state.run.isPaused) "Resume" else "Pause",
+                text = if (state.run.isPaused) "Continue" else "Pause",
                 onField = onField,
                 modifier = Modifier.weight(1f),
                 onClick = if (state.run.isPaused) onResume else onPause,
             )
             FieldButton(
-                text = "Skip stage",
+                text = "Next stage",
                 onField = onField,
                 modifier = Modifier.weight(1f),
                 onClick = onSkipStage,
@@ -349,8 +350,9 @@ private fun FieldButton(
         shape = RoundedCornerShape(14.dp),
         border = BorderStroke(width = 1.5.dp, brush = SolidColor(onField.copy(alpha = 0.5f))),
         colors = ButtonDefaults.outlinedButtonColors(contentColor = onField),
-        // The default button padding eats enough width in a three-up row to clip
-        // "Skip stage" down to "Skip", which reads as a different, riskier action.
+        // The default button padding uses too much width in a row of three buttons.
+        // The text "Next stage" then loses its second word and gets a different
+        // meaning.
         contentPadding = PaddingValues(horizontal = 4.dp),
     ) {
         Text(text, maxLines = 1, fontSize = 14.sp)
@@ -360,11 +362,11 @@ private fun FieldButton(
 @Composable
 private fun SignalNotice(signal: SignalStatus, onField: Color) {
     val message = when (signal) {
-        SignalStatus.ACQUIRING -> "Waiting for GPS"
-        SignalStatus.LOST -> "GPS signal lost — the run is paused until it returns"
-        SignalStatus.GPS_OFF -> "Location is switched off"
-        SignalStatus.NO_PERMISSION -> "Location access is needed to read your speed"
-        SignalStatus.COARSE_ONLY -> "Precise location is needed to read your speed"
+        SignalStatus.ACQUIRING -> "There is no GPS signal yet"
+        SignalStatus.LOST -> "The GPS signal is lost. The run will continue when the signal is available."
+        SignalStatus.GPS_OFF -> "The location function of this device is off"
+        SignalStatus.NO_PERMISSION -> "The app must have access to your location to read your speed"
+        SignalStatus.COARSE_ONLY -> "The app must have access to your accurate location to read your speed"
         SignalStatus.OK -> return
     }
     Text(
@@ -431,8 +433,9 @@ private fun ReadyView(
 
         Spacer(Modifier.height(12.dp))
         Text(
-            text = "At least ${units.formatDistanceWithUnit(state.procedure.minimumDistanceMeters)} " +
-                "of road, plus room to get up to speed.",
+            text = "You must have a minimum of " +
+                "${units.formatDistanceWithUnit(state.procedure.minimumDistanceMeters)} of road, " +
+                "and more distance to get to each start speed.",
             style = MaterialTheme.typography.bodyMedium,
             color = scheme.onSurfaceVariant,
         )
@@ -441,8 +444,9 @@ private fun ReadyView(
 
         if (needsPermission) {
             Text(
-                text = "Brake Bedding reads your speed from GPS. It needs precise " +
-                    "location while the app is open, and nothing else.",
+                text = "The app reads your speed from GPS. The app must have access to " +
+                    "your accurate location when it is open. The app does not use your " +
+                    "location for other functions.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = scheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 12.dp),
@@ -454,7 +458,7 @@ private fun ReadyView(
                     .height(60.dp),
                 shape = RoundedCornerShape(16.dp),
             ) {
-                Text("Grant location access", fontSize = 18.sp)
+                Text("Give access to location", fontSize = 18.sp)
             }
         } else {
             Button(
@@ -475,7 +479,7 @@ private fun ReadyView(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             TextButton(onClick = onEditProcedure, modifier = Modifier.weight(1f)) {
-                Text("Edit procedure")
+                Text("Edit the procedure")
             }
             TextButton(onClick = onOpenHelp, modifier = Modifier.weight(1f)) {
                 Text("Guide")
@@ -508,7 +512,7 @@ private fun FinishedView(
             modifier = Modifier.size(96.dp),
         )
         Spacer(Modifier.height(20.dp))
-        Text("BEDDED", style = instrumentVerb, color = onField)
+        Text("COMPLETE", style = instrumentVerb, color = onField)
         Spacer(Modifier.height(24.dp))
         Text(
             text = "${state.run.completedStops} stops · " +
@@ -518,15 +522,15 @@ private fun FinishedView(
         )
         Spacer(Modifier.height(20.dp))
         Text(
-            text = "Keep rolling for a few more minutes if you can, and avoid holding " +
-                "the brakes at a standstill until the rotors have cooled.",
+            text = "Continue to drive for some minutes if it is possible. Do not hold " +
+                "the brake pedal when the vehicle is stopped and the rotors are hot.",
             style = MaterialTheme.typography.bodyLarge,
             color = onField.copy(alpha = 0.9f),
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(32.dp))
         FieldButton(
-            text = "Done",
+            text = "OK",
             onField = onField,
             onClick = onDone,
             modifier = Modifier.width(200.dp),
@@ -536,18 +540,20 @@ private fun FinishedView(
 
 // --- Copy and derived values ---------------------------------------------------------
 
+// The command labels obey ASD-STE100. "BRAKE" and "DRIVE" are technical verbs of the
+// vehicle domain. "COOLDOWN" is a technical name in this application.
 private fun verbFor(phase: RunPhase): String = when (phase) {
-    RunPhase.SPEED_UP -> "SPEED UP"
-    RunPhase.SLOW_DOWN -> "SLOW DOWN"
-    RunPhase.HOLD -> "HOLD"
+    RunPhase.SPEED_UP -> "INCREASE SPEED"
+    RunPhase.SLOW_DOWN -> "DECREASE SPEED"
+    RunPhase.HOLD -> "HOLD SPEED"
     RunPhase.BRAKE -> "BRAKE"
-    RunPhase.GAP -> "COAST"
-    RunPhase.COOLDOWN -> "COOL DOWN"
-    RunPhase.FINISHED -> "BEDDED"
+    RunPhase.GAP -> "DRIVE"
+    RunPhase.COOLDOWN -> "COOLDOWN"
+    RunPhase.FINISHED -> "COMPLETE"
     RunPhase.IDLE -> ""
 }
 
-/** The number under the verb, and what it means. */
+/** The number below the command, and its data label. */
 private fun readoutFor(state: RunUiState, units: UnitSystem): Pair<String, String>? {
     val stage = state.currentStage
     return when (state.run.phase) {
@@ -557,11 +563,11 @@ private fun readoutFor(state: RunUiState, units: UnitSystem): Pair<String, Strin
             }
 
         RunPhase.BRAKE -> (stage as? BeddingStage)?.let {
-            units.formatSpeed(it.targetSpeedMps) to "down to ${units.speedLabel}"
+            units.formatSpeed(it.targetSpeedMps) to "brake to ${units.speedLabel}"
         }
 
         RunPhase.GAP, RunPhase.COOLDOWN ->
-            units.formatDistance(state.run.remainingMeters) to "${units.distanceLabel} to go"
+            units.formatDistance(state.run.remainingMeters) to "${units.distanceLabel} more"
 
         else -> null
     }
@@ -600,10 +606,10 @@ internal fun com.glazkov.brakebedding.data.Stage.summary(units: UnitSystem): Str
         append("$numberOfStops stops, ")
         append("${units.formatSpeed(startSpeedMps)} to ${units.formatSpeed(targetSpeedMps)} ${units.speedLabel}")
         if (gapDistanceMeters > 0) {
-            append(", ${units.formatDistanceWithUnit(gapDistanceMeters)} between")
+            append(", ${units.formatDistanceWithUnit(gapDistanceMeters)} between stops")
         }
         append(" · ${brakingIntensity.shortName}")
     }
 
-    is CooldownStage -> "Cooldown, ${units.formatDistanceWithUnit(distanceMeters)} without heavy braking"
+    is CooldownStage -> "Cooldown, ${units.formatDistanceWithUnit(distanceMeters)} with minimum braking"
 }

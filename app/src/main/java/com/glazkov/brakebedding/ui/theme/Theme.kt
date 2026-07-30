@@ -13,8 +13,8 @@ private val LightColors = lightColorScheme(
     onPrimaryContainer = EmberDeep,
     secondary = androidx.compose.ui.graphics.Color(0xFF6F5F57),
     onSecondary = androidx.compose.ui.graphics.Color.White,
-    // Segmented buttons and filter chips fill with secondaryContainer; left undefined it
-    // falls back to the baseline purple, which reads as another product's accent.
+    // Segmented buttons and filter chips use secondaryContainer. Without this value,
+    // they get the default purple. That color does not agree with the app colors.
     secondaryContainer = androidx.compose.ui.graphics.Color(0xFFF6DED0),
     onSecondaryContainer = androidx.compose.ui.graphics.Color(0xFF4A3427),
     background = Bone,
@@ -53,9 +53,9 @@ private val DarkColors = darkColorScheme(
 )
 
 /**
- * Dynamic colour is deliberately not offered. The run screen's meaning is carried by
- * fixed phase colours, and letting the wallpaper reshape the surrounding chrome would
- * leave the app looking like two different products.
+ * The app does not use dynamic color. This is intentional. Fixed phase colors carry
+ * the meaning of the run screen. If the wallpaper changed the other screens, the app
+ * would look like two different products.
  */
 @Composable
 fun BrakeBeddingTheme(

@@ -10,11 +10,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 
 /**
- * One progress affordance, reused for every kind of waiting the app does.
+ * One progress bar for each type of delay in the app.
  *
- * During a hold it drains over three seconds; during a gap or a cooldown it drains over
- * the distance left. Giving both the same shape means the driver learns a single thing —
- * "this empties, then something changes" — instead of two.
+ * In a hold, the bar becomes empty in three seconds. In a gap or a cooldown, the bar
+ * becomes empty with the distance. The two conditions have the same shape. Because of
+ * this, the driver learns one signal: the bar becomes empty, then a change comes.
  */
 @Composable
 fun DrainBar(

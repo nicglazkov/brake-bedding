@@ -4,15 +4,15 @@ import com.glazkov.brakebedding.data.Units.milesToMeters
 import com.glazkov.brakebedding.data.Units.mphToMps
 
 /**
- * Starting points so a new user does not face an empty screen.
+ * Start points for a new user. Then the first screen is not empty.
  *
- * These are commonly circulated street and track routines, not manufacturer
- * instructions. Whatever came in the box with the pads always wins, which is why the
- * UI presents these as editable starting points rather than as recommendations.
+ * These are usual procedures from the community, not manufacturer instructions. The
+ * instructions from the pad manufacturer have priority. Because of this, the UI
+ * shows the presets as start points that the user can edit.
  */
 object Presets {
 
-    /** The routine most street pad makers describe some variation of. */
+    /** The usual procedure for street pads. */
     val street = Procedure(
         name = "Street pads",
         stages = listOf(
@@ -34,7 +34,7 @@ object Presets {
         ),
     )
 
-    /** Adds a hotter third stage for more aggressive pad compounds. */
+    /** This procedure has a third stage with more heat, for performance pads. */
     val performance = Procedure(
         name = "Performance pads",
         stages = listOf(
@@ -63,7 +63,7 @@ object Presets {
         ),
     )
 
-    /** A short routine for swapping pads onto already bedded rotors. */
+    /** A short procedure for new pads on rotors that had a bedding before. */
     val quick = Procedure(
         name = "Quick re-bed",
         stages = listOf(

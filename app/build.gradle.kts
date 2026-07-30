@@ -7,9 +7,10 @@ plugins {
 }
 
 /**
- * Release signing is read from a keystore.properties file that is never committed.
- * Without it the project still configures and builds; only the release variant goes
- * unsigned, which keeps clones and CI working for anyone but the maintainer.
+ * The release signature data comes from a keystore.properties file. That file is not
+ * in the repository. The project also builds without the file. Then only the release
+ * variant has no signature. Because of this, clones and CI operate without the data
+ * that only the maintainer has.
  */
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties().apply {
@@ -22,9 +23,9 @@ val hasSigningConfig = keystoreProperties.getProperty("storeFile") != null
 android {
     namespace = "com.glazkov.brakebedding"
 
-    // Current AndroidX requires compiling against 37. targetSdk stays a step behind at
-    // 36 on purpose: targetSdk opts the app in to new runtime behaviour, and 36 is the
-    // newest level this project can actually exercise on an emulator.
+    // Current AndroidX makes API 37 necessary for the compilation. The targetSdk
+    // stays at 36. This is intentional. The targetSdk turns on new system behavior,
+    // and 36 is the newest level that an available emulator can test.
     compileSdk = 37
 
     defaultConfig {
@@ -81,12 +82,12 @@ android {
     }
 
     lint {
-        // targetSdk is deliberately held one level below compileSdk so the app only opts
-        // in to runtime behaviour that can be exercised on an available emulator.
+        // The targetSdk stays one level below the compileSdk. Refer to the note at
+        // compileSdk above.
         disable += "OldTargetApi"
-        // Lint reports mipmap-anydpi-v26 as a redundant qualifier at minSdk 26 and
-        // suggests plain mipmap-anydpi, but AAPT will not resolve an <adaptive-icon>
-        // from an unversioned folder and the build fails outright.
+        // Lint reports mipmap-anydpi-v26 as unnecessary at minSdk 26. It recommends
+        // mipmap-anydpi. But AAPT does not find an <adaptive-icon> in a folder
+        // without the version, and the build stops.
         disable += "ObsoleteSdkInt"
         warningsAsErrors = true
         abortOnError = true
@@ -100,8 +101,8 @@ android {
     }
 }
 
-// jvmTarget is not set explicitly: with AGP's built-in Kotlin it follows
-// android.compileOptions.targetCompatibility, so the two can never drift apart.
+// There is no explicit jvmTarget. With the Kotlin support in AGP, the jvmTarget
+// follows android.compileOptions.targetCompatibility. The two values always agree.
 
 dependencies {
     implementation(libs.androidx.core.ktx)

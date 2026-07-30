@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-/** User preferences that shape how a run is presented rather than what it contains. */
+/** The user settings. They change the display of a run, not its content. */
 data class AppSettings(
     val unitSystem: UnitSystem = UnitSystem.IMPERIAL,
     val voiceCues: Boolean = true,

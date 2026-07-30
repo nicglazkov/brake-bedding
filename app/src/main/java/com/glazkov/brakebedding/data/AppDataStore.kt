@@ -6,10 +6,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 
 /**
- * The app's single DataStore.
+ * The one DataStore of the app.
  *
- * It lives on its own because the delegate may only be created once per file per
- * process; both repositories read from this same instance rather than each declaring
- * their own, which would throw at runtime the first time the second one was touched.
+ * This is in its own file because one process can make the delegate only one time.
+ * The two repositories read from this one instance. Two separate delegates would
+ * cause an exception at the first use of the second one.
  */
 internal val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "brake_bedding")

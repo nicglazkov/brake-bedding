@@ -1,34 +1,34 @@
 package com.glazkov.brakebedding.engine
 
 /**
- * What the driver should be doing right now.
+ * The instruction for the driver at this time.
  *
- * Phases are deliberately coarse. Anything finer would be unreadable at a glance from
- * the driver's seat, which is the only place this screen is ever looked at.
+ * The phases are simple. This is intentional. The driver looks at the screen for a
+ * very short time. More phases would not be readable in that time.
  */
 enum class RunPhase {
-    /** Nothing running. */
+    /** No run is active. */
     IDLE,
 
-    /** Below the stage's start speed. */
+    /** The speed is below the start speed of the stage. */
     SPEED_UP,
 
-    /** More than the allowance above the stage's start speed. */
+    /** The speed is too far above the start speed of the stage. */
     SLOW_DOWN,
 
-    /** Within the acceptance band, counting down before the stop. */
+    /** The speed is in the permitted band. The countdown to the stop is active. */
     HOLD,
 
-    /** Braking towards the stage's target speed. */
+    /** The driver brakes to the target speed of the stage. */
     BRAKE,
 
-    /** Coasting the gap distance between stops so the brakes shed heat. */
+    /** The driver drives the distance between stops. The brakes become more cool. */
     GAP,
 
-    /** Running the final cooldown stage. */
+    /** The last stage: the cooldown. */
     COOLDOWN,
 
-    /** Every stage is done. */
+    /** All stages are complete. */
     FINISHED,
     ;
 
@@ -36,21 +36,21 @@ enum class RunPhase {
 }
 
 /**
- * The complete state of a run.
+ * The full state of a run.
  *
- * Everything the engine needs lives here, which is what lets [BeddingEngine] be a pure
- * function and lets the whole thing survive a rotation by sitting in a ViewModel.
+ * All data that the engine uses is here. Because of this, [BeddingEngine] can be a
+ * pure function, and the state can stay in memory through a screen rotation.
  */
 data class RunState(
     val phase: RunPhase = RunPhase.IDLE,
     val stageIndex: Int = 0,
-    /** Zero-based index of the stop within the current bedding stage. */
+    /** The index of the stop in the bedding stage. The first stop is zero. */
     val cycleIndex: Int = 0,
-    /** Seconds still to hold before the stop begins. */
+    /** The seconds of hold time that remain before the stop starts. */
     val holdSecondsRemaining: Double = BeddingEngine.HOLD_SECONDS,
-    /** Distance left in the current gap or cooldown. */
+    /** The distance that remains in the gap or in the cooldown. */
     val remainingMeters: Double = 0.0,
-    /** Stops completed across the whole procedure, for the progress indicator. */
+    /** The number of complete stops in the full procedure. The progress bar uses this. */
     val completedStops: Int = 0,
     val isPaused: Boolean = false,
     val elapsedSeconds: Double = 0.0,

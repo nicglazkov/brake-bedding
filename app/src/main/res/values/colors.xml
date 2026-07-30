@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-      Only the pre-Compose window background lives here; everything the app actually
-      draws is themed in Compose. Keeping this close to the Compose surface colour is
-      what stops a light flash between the splash screen and the first frame.
+      Only the window background from before the first Compose frame is here. Compose
+      sets the colors of all other content. This value must stay near the Compose
+      surface color. Then there is no light flash between the splash screen and the
+      first frame.
     -->
     <color name="window_background">#FFFBF8F6</color>
     <color name="splash_background">#FF7A2E0B</color>

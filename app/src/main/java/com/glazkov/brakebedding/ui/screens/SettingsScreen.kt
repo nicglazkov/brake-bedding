@@ -76,8 +76,8 @@ fun SettingsScreen(
             }
             Spacer(Modifier.height(8.dp))
             Text(
-                text = "Procedures are stored independently of this, so switching units " +
-                    "converts what you see rather than changing the routine.",
+                text = "This setting changes only the display. It does not change the " +
+                    "values in your procedure.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -88,20 +88,20 @@ fun SettingsScreen(
 
             SectionLabel("DURING A RUN")
             SettingSwitch(
-                title = "Spoken cues",
-                description = "Calls out each instruction so you can keep your eyes on the road.",
+                title = "Spoken instructions",
+                description = "The app speaks each instruction. You can keep your eyes on the road.",
                 checked = settings.voiceCues,
                 onCheckedChange = onVoiceCues,
             )
             SettingSwitch(
                 title = "Vibration",
-                description = "A pulse on every phase change, and a triple pulse to brake.",
+                description = "One pulse for each new instruction. Three pulses for the brake instruction.",
                 checked = settings.hapticCues,
                 onCheckedChange = onHapticCues,
             )
             SettingSwitch(
-                title = "Keep screen on",
-                description = "Holds the display awake while a procedure is running.",
+                title = "Keep the screen on",
+                description = "The screen stays on when a run is active.",
                 checked = settings.keepScreenOn,
                 onCheckedChange = onKeepScreenOn,
             )
@@ -114,8 +114,9 @@ fun SettingsScreen(
             Text("Brake Bedding $appVersion", style = MaterialTheme.typography.bodyLarge)
             Spacer(Modifier.height(4.dp))
             Text(
-                text = "Open source under Apache 2.0. Speed comes from your device's GPS " +
-                    "and never leaves the phone; the app has no network access at all.",
+                text = "This app is open source under the Apache 2.0 license. The app " +
+                    "reads your speed from the GPS receiver in this device. The app has " +
+                    "no access to the network. Your location data stays on this device.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

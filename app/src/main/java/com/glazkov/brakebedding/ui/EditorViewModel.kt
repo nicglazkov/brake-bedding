@@ -30,10 +30,10 @@ data class EditorUiState(
 /**
  * Edits the stored procedure.
  *
- * Every change writes straight through to storage rather than waiting for a Save button.
- * The previous version had one, and a commit titled "Fixed stages not saving" — removing
- * the button removes the whole category of bug, and deletions stay recoverable through
- * undo instead.
+ * The app writes each change to storage immediately. There is no Save button. The
+ * first version had one, and also a commit with the title "Fixed stages not saving".
+ * Without the button, that type of defect is not possible. The Undo function keeps
+ * removed stages recoverable.
  */
 class EditorViewModel(
     private val procedureRepository: ProcedureRepository,
@@ -43,7 +43,7 @@ class EditorViewModel(
     private val _state = MutableStateFlow(EditorUiState())
     val state: StateFlow<EditorUiState> = _state.asStateFlow()
 
-    /** The most recently removed stage and where it was, so it can be put back. */
+    /** The last removed stage and its position. The Undo function uses this. */
     private var lastRemoved: Pair<Int, Stage>? = null
 
     init {
@@ -95,7 +95,7 @@ class EditorViewModel(
     }
 
     fun applyPreset(preset: Procedure) = mutate {
-        // Fresh ids so the preset becomes the user's own copy rather than a shared one.
+        // New ids make the preset the user's own copy, not a shared object.
         preset.copy(
             stages = preset.stages.map { stage ->
                 when (stage) {
@@ -109,8 +109,8 @@ class EditorViewModel(
     }
 
     /**
-     * A cooldown only makes sense once the heat has been put into the brakes, so it is
-     * kept at the end no matter where it was dropped.
+     * A cooldown is correct only after the brakes are hot. Because of this, the app
+     * keeps the cooldown at the end, independent of its drop position.
      */
     private fun orderCooldownLast(stages: List<Stage>): List<Stage> {
         val (cooldowns, bedding) = stages.partition { it is CooldownStage }

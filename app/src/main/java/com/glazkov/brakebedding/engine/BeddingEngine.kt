@@ -6,34 +6,34 @@ import com.glazkov.brakebedding.data.Procedure
 import com.glazkov.brakebedding.data.Stage
 import com.glazkov.brakebedding.data.Units
 
-/** Everything that can move a run forwards. */
+/** The events that can move a run forward. */
 sealed interface RunEvent {
     data object Start : RunEvent
     data object Pause : RunEvent
     data object Resume : RunEvent
     data object Stop : RunEvent
 
-    /** Skips the rest of the current stage, for when a road runs out. */
+    /** Goes to the subsequent stage. Use this event when the road is too short. */
     data object SkipStage : RunEvent
 
     /**
-     * One speed sample. [deltaSeconds] is the wall time since the previous tick, which
-     * is what distances are integrated against.
+     * One speed sample. [deltaSeconds] is the time after the last tick. The engine
+     * multiplies the speed by this time to calculate the distance.
      */
     data class Tick(val speedMps: Double, val deltaSeconds: Double) : RunEvent
 }
 
 /**
- * Drives a [Procedure] forwards from speed samples.
+ * Moves a [Procedure] forward from speed samples.
  *
- * This class is pure: it holds no mutable state, touches nothing on Android, and posts
- * no callbacks. A whole run is `states.fold(initial, engine::reduce)`, which is what
- * makes it testable without a device and what removes the timer races the previous
- * Handler-based implementation had.
+ * This class is pure. It keeps no data, it does not use Android, and it makes no
+ * callbacks. A full run is one fold of events into states. Because of this, tests do
+ * not need a device. Also, the timer races of the first implementation are not
+ * possible.
  */
 class BeddingEngine(val procedure: Procedure) {
 
-    /** Applies one event, returning the resulting state. Never mutates [state]. */
+    /** Applies one event and returns the new state. It does not change [state]. */
     fun reduce(state: RunState, event: RunEvent): RunState = when (event) {
         RunEvent.Start -> enterStage(RunState(), 0)
         RunEvent.Stop -> RunState()
@@ -52,8 +52,8 @@ class BeddingEngine(val procedure: Procedure) {
     private fun tick(state: RunState, event: RunEvent.Tick): RunState {
         if (!state.isActive) return state
 
-        // A backgrounded app or a stalled GPS can produce a huge gap between samples.
-        // Clamping stops one late tick from teleporting the driver through a gap.
+        // A stopped app or a stopped GPS can cause a large time between samples. The
+        // limit prevents one late tick that moves the driver through a full gap.
         val dt = event.deltaSeconds.coerceIn(0.0, MAX_TICK_SECONDS)
         val speed = event.speedMps.coerceAtLeast(0.0)
 
@@ -81,17 +81,19 @@ class BeddingEngine(val procedure: Procedure) {
             val remaining = state.remainingMeters - speed * dt
             if (remaining <= 0) advanceCycle(state, stage) else state.copy(remainingMeters = remaining)
         }
-        // A cooldown phase against a bedding stage means the procedure was edited mid-run.
+        // A cooldown phase with a bedding stage shows that the procedure changed
+        // during the run. Start the stage again.
         else -> enterStage(state, state.stageIndex)
     }
 
     /**
-     * Gets the car to the stage's start speed and holds it there.
+     * Gets the vehicle to the start speed of the stage and holds it there.
      *
-     * The acceptance band is asymmetric on purpose: being a little fast still delivers
-     * the energy the stage is asking for, so it is accepted, while being slow does not.
-     * The previous implementation left 2-5 mph over the start speed unclassified and
-     * fell through to telling the driver to accelerate.
+     * The speed band is not symmetrical. This is intentional. A speed that is a small
+     * amount too high gives the stage the necessary energy. The engine accepts it. A
+     * speed that is too low does not give that energy. The first implementation had
+     * no category for 2 to 5 mph above the start speed. It told the driver to
+     * increase the speed.
      */
     private fun approach(state: RunState, stage: BeddingStage, speed: Double, dt: Double): RunState {
         val diff = speed - stage.startSpeedMps
@@ -116,7 +118,7 @@ class BeddingEngine(val procedure: Procedure) {
         }
     }
 
-    /** The driver has reached the target speed, so the stop itself is done. */
+    /** The vehicle is at the target speed. The stop is complete. */
     private fun finishStop(state: RunState, stage: BeddingStage): RunState {
         val counted = state.copy(completedStops = state.completedStops + 1)
         return if (stage.gapDistanceMeters > 0) {
@@ -150,10 +152,11 @@ class BeddingEngine(val procedure: Procedure) {
     }
 
     /**
-     * Moves to [index], or finishes if the procedure has run out of stages.
+     * Goes to the stage at [index]. If there is no stage there, the run is complete.
      *
-     * Bedding stages start in [RunPhase.SPEED_UP] provisionally; the next tick
-     * reclassifies against the actual speed, which at 4 Hz the driver never sees.
+     * A bedding stage starts in [RunPhase.SPEED_UP] as an initial value. The
+     * subsequent tick sets the correct phase from the speed. At 4 Hz, the driver does
+     * not see the initial value.
      */
     private fun enterStage(state: RunState, index: Int): RunState {
         val stage = stageAt(index) ?: return state.copy(
@@ -173,16 +176,16 @@ class BeddingEngine(val procedure: Procedure) {
     }
 
     companion object {
-        /** How long the car must sit at the start speed before a stop begins. */
+        /** The time at the start speed that is necessary before a stop starts. */
         const val HOLD_SECONDS = 3.0
 
-        /** How far under the start speed still counts as "at speed". */
+        /** The permitted difference below the start speed. */
         val SPEED_TOLERANCE_MPS = Units.mphToMps(2.0)
 
-        /** How far over the start speed is tolerated before asking the driver to back off. */
+        /** The permitted difference above the start speed. */
         val SPEED_OVERAGE_MPS = Units.mphToMps(5.0)
 
-        /** Upper bound applied to a single tick's elapsed time. */
+        /** The maximum time that one tick can supply. */
         const val MAX_TICK_SECONDS = 2.0
     }
 }

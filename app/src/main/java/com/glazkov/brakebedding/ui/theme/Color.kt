@@ -3,8 +3,8 @@ package com.glazkov.brakebedding.ui.theme
 import androidx.compose.ui.graphics.Color
 import com.glazkov.brakebedding.engine.RunPhase
 
-// Brand. Warm stone neutrals and an ember accent, taken from the rotor-at-temperature
-// idea in the launcher icon rather than from a default Material palette.
+// The brand colors: warm stone tones and an ember accent. Their source is the hot
+// rotor in the launcher icon, not a default Material palette.
 val Ember = Color(0xFFC2410C)
 val EmberDeep = Color(0xFF7A2E0B)
 val EmberBright = Color(0xFFEA580C)
@@ -16,16 +16,16 @@ val Steel = Color(0xFFA8A29E)
 val Ink = Color(0xFF1C1917)
 
 /**
- * The colour a phase paints the entire run screen.
+ * The color that a phase gives to the full run screen.
  *
- * These are fixed rather than derived from the wallpaper. Dynamic colour is the modern
- * default, but a driver learning that red means brake should get the same red on every
- * device, and a Material You palette could easily hand back two phase colours that are
- * near neighbours. Identity here is worth less than being unmistakable.
+ * These colors do not change with the wallpaper. Dynamic color is the usual default.
+ * But red must be the brake color on each device, and a dynamic palette can supply
+ * two phase colors that are almost the same. Clear signals are more important than
+ * style.
  *
- * Colour never carries a phase on its own: [com.glazkov.brakebedding.ui.components]
- * pairs every one of these with a distinct chevron, because red and green are exactly
- * the pair that the most common form of colour blindness collapses.
+ * A color is never the only signal for a phase. Each phase also has its own symbol.
+ * The usual type of color blindness makes red and green look the same, and those
+ * two colors carry the two most important instructions.
  */
 data class PhaseColors(val field: Color, val onField: Color)
 
@@ -35,7 +35,7 @@ object PhasePalette {
     private val hold = PhaseColors(Color(0xFF1668C4), Color.White)
     private val brake = PhaseColors(Color(0xFFD92D20), Color.White)
 
-    /** The gap is the rest period, so it stays dark and quiet and spends no attention. */
+    /** The gap is the rest period. Its color is dark and does not use attention. */
     private val gap = PhaseColors(Color(0xFF2C3742), Color.White)
     private val cooldown = PhaseColors(Color(0xFF115E59), Color.White)
     private val finished = PhaseColors(Ember, Color.White)

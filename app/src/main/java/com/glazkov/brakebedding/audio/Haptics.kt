@@ -9,10 +9,10 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 
 /**
- * Phase changes you can feel through a phone mount.
+ * Vibration cues that you can feel through a phone mount.
  *
- * The braking cue is a triple pulse rather than a longer buzz: in a moving car a single
- * long vibration is easy to mistake for road noise, while a rhythm is not.
+ * The brake cue is three pulses, not one long vibration. In a vehicle that moves,
+ * one long vibration can feel the same as the road. A rhythm cannot.
  */
 class Haptics(context: Context) {
 
@@ -34,9 +34,9 @@ class Haptics(context: Context) {
     )
 
     /**
-     * A cue is never worth a crash. The app is held in a mount in a moving car, so
-     * losing the screen because the vibrator was unavailable would be worse than losing
-     * the buzz — some OEM builds and work profiles deny this even when it is declared.
+     * A cue must not cause an app stop. The app operates in a vehicle that moves. An
+     * app stop because the vibrator is not available is worse than no vibration.
+     * Some device builds and work profiles refuse the permission.
      */
     private fun play(effect: VibrationEffect) {
         try {

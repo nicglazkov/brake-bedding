@@ -34,9 +34,9 @@ jobs:
       - name: Lint
         run: ./gradlew lintDebug --stacktrace
 
-      # keystore.properties is not present in CI, so the release variant builds unsigned.
-      # That is deliberate: it proves the project configures and minifies without any
-      # maintainer-only material.
+      # CI has no keystore.properties file. Because of this, the release variant has
+      # no signature. This is intentional. It shows that the project builds without
+      # the data that only the maintainer has.
       - name: Assemble
         run: ./gradlew assembleDebug assembleRelease --stacktrace
 

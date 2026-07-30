@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Status-bar icon: the launcher rotor reduced to what survives 24dp — the swept band
-  and four holes. Notification small icons are alpha masks, so this must stay a single
-  flat colour; the system tints it.
+  The status-bar icon: the rotor with only the parts that stay clear at 24 dp. Those
+  are the friction band and four holes. Notification icons are alpha masks. Because
+  of this, the icon must have one flat color. The system sets the color.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"

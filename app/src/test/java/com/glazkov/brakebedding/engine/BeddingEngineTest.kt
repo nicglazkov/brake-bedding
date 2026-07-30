@@ -54,9 +54,9 @@ class BeddingEngineTest {
     }
 
     /**
-     * The previous implementation posted a new Handler countdown on every entry into the
-     * hold state without cancelling the old one, so wobbling across the tolerance band
-     * left several countdowns running and the stop began early.
+     * The first implementation made a new Handler countdown at each entry into the
+     * hold state. It did not cancel the old countdown. Speed changes across the band
+     * kept some countdowns active, and the stop started too early.
      */
     @Test
     fun `dropping out of the band restarts the countdown from the beginning`() {
@@ -68,7 +68,8 @@ class BeddingEngineTest {
         assertEquals(RunPhase.SPEED_UP, state.phase)
         assertEquals(BeddingEngine.HOLD_SECONDS, state.holdSecondsRemaining, 0.001)
 
-        // Back in the band, but only for two seconds, so the stop must not begin yet.
+        // The speed is in the band again, but only for two seconds. The stop must
+        // not start yet.
         state = state.drive(mph = 40.0, seconds = 2.0)
         assertEquals(RunPhase.HOLD, state.phase)
     }
@@ -80,13 +81,14 @@ class BeddingEngineTest {
             state = state.drive(mph = 40.0, seconds = 2.0)
             state = state.drive(mph = 30.0, seconds = 0.5)
         }
-        // Twenty near-misses, none of which should have accumulated into a stop.
+        // Twenty short holds occurred. They must not add up to one stop.
         assertEquals(0, state.completedStops)
     }
 
     /**
-     * Being slightly over the start speed used to fall through the classification into
-     * `else -> ACCELERATING`, telling the driver to speed up while already too fast.
+     * In the first implementation, a speed that was a small amount above the start
+     * speed went into `else -> ACCELERATING`. The app then told the driver to
+     * increase a speed that was already too high.
      */
     @Test
     fun `slightly over the start speed counts as at speed`() {
@@ -146,10 +148,10 @@ class BeddingEngineTest {
     // --- The cooldown stage --------------------------------------------------------
 
     /**
-     * The headline bug. Cooldown stages were written through a polymorphic Gson adapter
-     * but read back as `List<BeddingStage>`, so every cooldown arrived with all fields
-     * zeroed and the app instructed the driver to "SLOW DOWN to 0 mph" instead of
-     * running a cooldown.
+     * The primary defect. The app wrote cooldown stages with a polymorphic Gson
+     * adapter, but read them as a `List<BeddingStage>`. Each cooldown then had all
+     * values at zero. The app told the driver "SLOW DOWN to 0 mph" and did not do
+     * the cooldown.
      */
     @Test
     fun `a cooldown stage runs as a cooldown`() {
@@ -223,8 +225,8 @@ class BeddingEngineTest {
     }
 
     /**
-     * A backgrounded app can deliver one tick covering many seconds. Without clamping,
-     * a single late sample would consume an entire gap.
+     * An app that was off the screen can supply one tick with many seconds. Without
+     * the limit, one late sample would use a full gap.
      */
     @Test
     fun `one very long tick cannot consume a whole gap`() {
@@ -244,8 +246,8 @@ class BeddingEngineTest {
     // --- Whole-procedure simulation -------------------------------------------------
 
     /**
-     * Runs a realistic procedure against a driver that actually follows the
-     * instructions, which catches transitions that only appear in sequence.
+     * Does a full procedure with a driver model that obeys the instructions. This
+     * finds the transitions that occur only in a sequence.
      */
     @Test
     fun `a simulated driver completes a full procedure`() {
@@ -287,10 +289,10 @@ class BeddingEngineTest {
         assertTrue("should have covered real distance", state.distanceTraveledMeters > milesToMeters(20.0))
     }
 
-    /** A driver that responds to whatever the app is currently asking for. */
+    /** A driver model that obeys the applicable instruction. */
     private fun nextSpeed(engine: BeddingEngine, state: RunState, current: Double, dt: Double): Double {
-        val accel = 2.5 * dt   // roughly 0-60 in eleven seconds
-        val braking = 5.0 * dt // a firm but unremarkable stop
+        val accel = 2.5 * dt   // approximately 0 to 60 mph in eleven seconds
+        val braking = 5.0 * dt // a firm, usual stop
         val cruise = mphToMps(45.0)
         return when (state.phase) {
             RunPhase.SPEED_UP -> current + accel
@@ -332,9 +334,9 @@ class BeddingEngineTest {
     }
 
     /**
-     * Drives one complete stop: up to speed, hold, brake, then out through the gap,
-     * stopping the moment the gap ends so the caller can inspect the state at exactly
-     * that transition rather than somewhere past it.
+     * Does one full stop: speed, hold, brake, and then the gap. The function stops
+     * when the gap ends. Then the caller can examine the state at that exact
+     * transition.
      */
     private fun RunState.completeOneStop(): RunState {
         var state = drive(mph = 40.0, seconds = 3.5).tick(mph = 14.0)

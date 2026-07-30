@@ -8,17 +8,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 /**
- * Every live number in this app is monospaced.
+ * Each live number in this app has a monospace font.
  *
- * It reads as instrumentation, which is the right vernacular, but the reason it is not
- * only a style choice is that the speed readout updates four times a second. In a
- * proportional face the digits change width as they change value and the whole number
- * visibly shimmers; monospaced digits hold still, which is what makes a glance at speed
- * possible while driving.
+ * The style agrees with vehicle instruments. But there is also a technical cause.
+ * The speed display changes four times each second. In a proportional font, the
+ * digits change their width with each value, and the number moves. Monospace digits
+ * do not move. Because of this, the driver can read the speed quickly.
  */
 val InstrumentNumerals = FontFamily.Monospace
 
-/** Small uppercase mono labels, the way a gauge cluster labels its dials. */
+/** Small monospace labels in capitals, as on the dials of an instrument cluster. */
 val instrumentLabel = TextStyle(
     fontFamily = InstrumentNumerals,
     fontWeight = FontWeight.Medium,
@@ -27,7 +26,7 @@ val instrumentLabel = TextStyle(
     letterSpacing = 1.6.sp,
 )
 
-/** The one word the driver actually reads, sized to be legible in peripheral vision. */
+/** The command that the driver reads. Its size makes it legible at the edge of vision. */
 val instrumentVerb = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Black,
@@ -37,7 +36,7 @@ val instrumentVerb = TextStyle(
     textAlign = TextAlign.Center,
 )
 
-/** The target the verb refers to: a speed to reach, a distance to cover. */
+/** The target of the command: a speed or a distance. */
 val instrumentReadout = TextStyle(
     fontFamily = InstrumentNumerals,
     fontWeight = FontWeight.Black,
@@ -47,7 +46,7 @@ val instrumentReadout = TextStyle(
     textAlign = TextAlign.Center,
 )
 
-/** The smaller supporting figures along the bottom of the run screen. */
+/** The smaller values at the bottom of the run screen. */
 val instrumentTelemetry = TextStyle(
     fontFamily = InstrumentNumerals,
     fontWeight = FontWeight.Bold,
@@ -61,8 +60,8 @@ val AppTypography = Typography().let { base ->
         displayLarge = base.displayLarge.copy(fontWeight = FontWeight.Black),
         headlineMedium = base.headlineMedium.copy(fontWeight = FontWeight.Bold),
         titleLarge = base.titleLarge.copy(fontWeight = FontWeight.Bold),
-        // Section headers in the editor borrow the gauge-label treatment so the two
-        // halves of the app read as the same instrument.
+        // The section headers in the editor use the same label style. Then the two
+        // parts of the app look like one instrument.
         labelSmall = instrumentLabel,
     )
 }

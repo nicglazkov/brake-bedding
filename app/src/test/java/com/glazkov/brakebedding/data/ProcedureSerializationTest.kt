@@ -12,9 +12,9 @@ class ProcedureSerializationTest {
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
 
     /**
-     * The bug this app shipped with: a cooldown stage survived being written but not
-     * being read, because writing and reading went through different code. One generated
-     * serializer for both directions is what makes that impossible now.
+     * The defect in the first version: the write of a cooldown stage was correct, but
+     * the read was not, because the two operations used different code. Now one
+     * generated serializer does the write and the read. The defect is not possible.
      */
     @Test
     fun `a procedure containing a cooldown round-trips unchanged`() {
@@ -85,7 +85,7 @@ class ProcedureSerializationTest {
         assertEquals(6.0, Units.metersToMiles(cooldown.distanceMeters), 0.0001)
     }
 
-    /** The oldest builds wrote stages with no type discriminator at all. */
+    /** The oldest builds wrote stages with no type value. */
     @Test
     fun `legacy data without a type discriminator imports as bedding`() {
         val legacy = """
