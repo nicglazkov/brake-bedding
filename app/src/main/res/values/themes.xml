@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-      Compose draws every pixel of this app, so the platform theme exists only to hold
-      the window background used before the first frame and to hand off from the splash
-      screen. Transparent system bars pair with enableEdgeToEdge() in MainActivity.
+      Compose draws each pixel of this app. Because of this, the platform theme has
+      only two functions: the window background before the first frame, and the
+      change from the splash screen. The transparent system bars operate together
+      with enableEdgeToEdge() in MainActivity.
     -->
     <style name="Theme.BrakeBedding" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/window_background</item>

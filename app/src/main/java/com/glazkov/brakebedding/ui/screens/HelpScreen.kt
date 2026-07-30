@@ -23,53 +23,59 @@ import com.glazkov.brakebedding.ui.theme.instrumentLabel
 
 private data class GuideSection(val title: String, val body: String)
 
+// All guide text obeys ASD-STE100: approved verb forms, active voice, commands for
+// instructions, and a maximum of 20 words for each instruction sentence.
 private val sections = listOf(
     GuideSection(
-        "What bedding does",
-        "Bedding lays an even film of pad material onto the rotor face and heat-cycles " +
-            "the pad compound so it stops outgassing under load. Done properly it is why " +
-            "new brakes stop quietly, bite consistently and resist fade. Skipped, it is " +
-            "why they judder, squeal, or leave uneven deposits that feel like a warped rotor.",
+        "What brake bedding does",
+        "Brake bedding puts a thin, equal layer of pad material on the rotor surface. " +
+            "It also heats the pads in controlled cycles.\n\n" +
+            "Correct bedding gives brakes that are quiet and consistent. " +
+            "If you do not bed the brakes, they can make noise, cause vibration, or " +
+            "put unwanted pad material on the rotors.",
     ),
     GuideSection(
         "Before you start",
-        "Find a road you can use safely: straight, level, empty, with good sight lines and " +
-            "somewhere to abort. A procedure needs several miles of continuous driving, and " +
-            "you should not be stopping at junctions in the middle of it.\n\n" +
-            "Mount the phone where you can see it without moving your head far. Turn on " +
-            "spoken cues so you do not have to look at all.",
+        "Find a road where the procedure is safe. The road must be straight, level, and " +
+            "empty, with a clear view. You must have some miles of road without " +
+            "intersections.\n\n" +
+            "Attach the phone in a position near your line of view. Set the spoken " +
+            "instructions to on. Then it is not necessary to look at the screen.",
     ),
     GuideSection(
-        "Reading the screen",
-        "The whole screen is the instruction. Each phase has its own colour and its own " +
-            "chevron, so you can tell them apart at a glance and without relying on colour.\n\n" +
-            "Chevrons up means get to the target speed. Chevrons down means shed speed — " +
-            "one for easing off, three for the stop itself. Two bars means hold what you " +
-            "have while the bar at the bottom drains. A single bar means coast.",
+        "The screen",
+        "The full screen shows one instruction. Each instruction has its own color and " +
+            "its own symbol. You do not identify an instruction only by its color.\n\n" +
+            "Chevrons that point up: increase speed to the target. One chevron that " +
+            "points down: decrease speed. Three chevrons that point down: brake. Two " +
+            "bars: hold your speed until the bar at the bottom is empty. One bar: " +
+            "drive, and do not brake.",
     ),
     GuideSection(
-        "During a stop",
-        "Brake at the intensity the stage asks for and release at the target speed. Do not " +
-            "come to a standstill, and do not hold the pedal once you are down to speed — " +
-            "resting a hot pad against a stationary rotor is what prints an uneven deposit " +
-            "into it.\n\nThen coast the gap. That gap is not padding; it is the time the " +
-            "brakes need to shed heat before the next stop.",
+        "Each stop",
+        "Apply the brakes with the force that the stage specifies. Release the brakes " +
+            "at the target speed. Do not stop the vehicle. Do not hold the brake pedal " +
+            "after you are at the target speed. A hot pad on a rotor that does not turn " +
+            "causes an unwanted layer of pad material.\n\n" +
+            "Then drive the distance between the stops. This distance lets the brakes " +
+            "become more cool before the subsequent stop.",
     ),
     GuideSection(
         "The cooldown",
-        "The final stage is several miles of ordinary driving with as little braking as you " +
-            "can manage. Park at the end of it, not before. If you have to stop early, leave " +
-            "the car in gear or on a wheel chock rather than holding it on the brake pedal.",
+        "The last stage is some miles of usual speed with minimum braking. Park only " +
+            "after the cooldown is complete. If a stop is necessary before that, put " +
+            "the transmission in park or use a wheel chock. Do not hold the vehicle " +
+            "with the brake pedal.",
     ),
     GuideSection(
         "Safety",
-        "Stay inside the speed limit and inside your own comfort. If a stage asks for a " +
-            "speed the road does not allow, edit it down — the routine matters less than " +
-            "not crashing.\n\nStop immediately if you smell burning, the pedal goes long or " +
-            "soft, or the car pulls under braking. Fade is a sign to let everything cool, " +
-            "not a sign to push on.\n\nThis app is a timer and a prompt. It cannot see the " +
-            "road, and whatever the pad manufacturer printed in the box beats whatever is " +
-            "on this screen.",
+        "Obey the speed limits. If a stage specifies a speed that is too high for the " +
+            "road, decrease the speed in the stage editor.\n\n" +
+            "Stop the procedure immediately if you get the smell of hot brakes, if the " +
+            "pedal becomes soft, or if the vehicle pulls to one side. Let the brakes " +
+            "become cool.\n\n" +
+            "The app cannot see the road. You are responsible for the vehicle. The " +
+            "instructions from the pad manufacturer have priority over this app.",
     ),
 )
 

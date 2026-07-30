@@ -1,136 +1,143 @@
 <p align="center">
-  <img src="store/play-icon-512.png" width="112" alt="Brake Bedding icon: a drilled brake rotor on a heat gradient" />
+  <img src="store/play-icon-512.png" width="112" alt="The Brake Bedding icon. It shows a brake rotor with holes on a heat gradient." />
 </p>
 
 <h1 align="center">Brake Bedding</h1>
 
 <p align="center">
   <a href="https://github.com/nicglazkov/brake-bedding/actions/workflows/build.yml"><img src="https://github.com/nicglazkov/brake-bedding/actions/workflows/build.yml/badge.svg" alt="Build status" /></a>
-  <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android 8.0+" />
-  <img src="https://img.shields.io/badge/Kotlin-Compose-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin + Jetpack Compose" />
+  <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android 8.0 or newer" />
+  <img src="https://img.shields.io/badge/Kotlin-Compose-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin and Jetpack Compose" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0" /></a>
 </p>
 
-An Android app that coaches you through bedding in new brake pads and rotors, using your
-phone's GPS to know when you have hit the speed a stage is asking for.
+Brake Bedding is an Android app. It helps you bed in new brake pads and rotors. The app
+reads your speed from GPS. It shows and speaks each instruction at the correct time.
 
-Bedding lays an even film of pad material onto the rotor face and heat-cycles the pad
-compound. Done properly it is why new brakes stop quietly, bite consistently and resist
-fade. Skipped, it is why they judder or leave uneven deposits that feel like a warped
-rotor. The procedure is not complicated, but it is fiddly to run from memory while
-driving — twenty stops from one speed to another, with a set distance between each.
+Brake bedding puts a thin, equal layer of pad material on the rotor surface. It also
+heats the pads in controlled cycles. Correct bedding gives brakes that are quiet and
+consistent. The procedure is not complex, but it is difficult to do from memory: many
+stops from one speed to a lower speed, with a set distance between the stops.
 
 <p align="center">
-  <img src="assets/ready.png" alt="Procedure summary with a Start button" width="30%" />
-  <img src="assets/hold.png" alt="Hold phase, showing the target speed and a draining countdown bar" width="30%" />
-  <img src="assets/brake.png" alt="Brake phase, showing the speed to brake down to" width="30%" />
+  <img src="assets/ready.png" alt="The start screen. It shows the procedure and a Start button." width="30%" />
+  <img src="assets/hold.png" alt="The hold instruction. It shows the target speed and a countdown bar." width="30%" />
+  <img src="assets/brake.png" alt="The brake instruction. It shows the speed at which you release the brakes." width="30%" />
 </p>
 <p align="center">
-  <img src="assets/cooldown.png" alt="Cooldown phase counting down remaining distance" width="30%" />
-  <img src="assets/editor.png" alt="Procedure editor listing stages" width="30%" />
-  <img src="assets/guide.png" alt="In-app guide" width="30%" />
+  <img src="assets/cooldown.png" alt="The cooldown instruction. It shows the distance that remains." width="30%" />
+  <img src="assets/editor.png" alt="The procedure editor. It shows the list of stages." width="30%" />
+  <img src="assets/guide.png" alt="The guide in the app." width="30%" />
 </p>
 
-## What it does
+## Functions
 
-- Reads your ground speed from GPS and tells you what to do next
-- One full-screen colour per phase, so it is readable at a glance from the driver's seat
-- Spoken cues, so you do not have to look at the screen at all
-- Every phase also carries a distinct chevron, so nothing depends on colour alone
-- A stop ladder across the top showing how much of the procedure is left
-- Keeps running when a call comes in or the screen turns off — the current instruction
-  stays visible in the notification, with pause and stop controls
-- Editable stages, three presets, and mph or km/h
+- The app reads your ground speed from GPS and shows the applicable instruction
+- Each instruction has its own full-screen color. You can read it quickly from the
+  driver seat
+- The app can speak each instruction. Then it is not necessary to look at the screen
+- Each instruction also has its own symbol. You do not identify an instruction only by
+  its color
+- A progress bar at the top shows the stops that remain
+- The run continues when a call comes in or when the screen goes off. The instruction
+  stays in the notification, with Pause and Stop controls
+- You can edit the stages, start from three presets, and select mph or km/h
 
-## Installing
+## Installation
 
-Grab `brake-bedding-<version>.apk` from the
-[latest release](https://github.com/nicglazkov/brake-bedding/releases/latest), allow
-your browser or file manager to install unknown apps when prompted, and open it. The app
-asks for precise location on first use — that is the speed source, and the only
-permission it needs to run.
+1. Download `brake-bedding-<version>.apk` from the
+   [latest release](https://github.com/nicglazkov/brake-bedding/releases/latest).
+2. If the device asks for it, give your browser or file manager permission to install
+   unknown apps.
+3. Open the file to install the app.
+4. Give the app access to your accurate location when it asks. This is the speed source.
+   The app does not use other permissions to operate.
 
 ## Safety
 
-**Only run a procedure on a road where it is safe to do so**: straight, level, empty, with
-good sight lines and somewhere to abort. You need several miles of continuous driving.
+**Do the procedure only on a road where it is safe.** The road must be straight, level,
+and empty, with a clear view. You must have some miles of road without intersections.
 
-- Stay inside the speed limit and inside your own comfort. If a stage asks for a speed the
-  road does not allow, edit the stage down.
-- Never come to a standstill during a stop, and do not hold the pedal once you are at the
-  target speed. Resting a hot pad against a stationary rotor is what prints an uneven
-  deposit into it.
-- Stop immediately if you smell burning, the pedal goes long or soft, or the car pulls
-  under braking.
-- Finish the cooldown before parking.
+- Obey the speed limits. If a stage specifies a speed that is too high for the road,
+  decrease the speed in the stage editor.
+- Do not stop the vehicle during a stop cycle. Do not hold the brake pedal when the
+  brakes are hot and the vehicle does not move. This causes an unwanted layer of pad
+  material on the rotor.
+- Stop the procedure immediately if you get the smell of hot brakes, if the pedal
+  becomes soft, or if the vehicle pulls to one side.
+- Complete the cooldown before you park.
 
-This app is a timer and a prompt. It cannot see the road. Whatever the pad manufacturer
-printed in the box beats whatever is on the screen — the built-in presets are common
-community routines, not manufacturer instructions, which is why they are editable.
+The app is a guide. It cannot see the road. You are responsible for the vehicle. The
+instructions from the pad manufacturer have priority over this app. The presets are
+usual procedures from the community, not manufacturer data. Because of this, you can
+edit them.
 
-## Using it
+## Operation
 
-1. Open the app and either accept the default preset or tap **Edit procedure**.
-2. For each stage set the number of stops, the speed to start from, the speed to brake
-   down to, the distance to cover between stops, and how hard to brake.
-3. Keep a cooldown at the end. The app will tell you if there is not one.
-4. Find your road, mount the phone, and press **Start**.
+1. Open the app. Use the default preset, or push **Edit the procedure**.
+2. For each stage, set the number of stops, the start speed, the target speed, the
+   distance between the stops, and the brake force.
+3. Keep a cooldown stage at the end. The app shows a message if there is no cooldown.
+4. Go to your road, attach the phone, and push **Start**.
 
-While a procedure is running:
+The instructions during a run:
 
-| Phase | Means |
+| Instruction | Meaning |
 |---|---|
-| **SPEED UP** (chevrons up) | Get to the stage's start speed |
-| **SLOW DOWN** (one chevron down) | You are well over the start speed |
-| **HOLD** (two bars) | Sit at that speed while the bar drains |
-| **BRAKE** (three chevrons down) | Brake at the stage's intensity, release at the target |
-| **COAST** (one bar) | Cover the gap distance so the brakes shed heat |
-| **COOL DOWN** (wave) | Drive the cooldown distance with as little braking as you can |
+| **INCREASE SPEED** (chevrons up) | Go to the start speed of the stage |
+| **DECREASE SPEED** (one chevron down) | Your speed is too high for the stage |
+| **HOLD SPEED** (two bars) | Stay at this speed until the bar is empty |
+| **BRAKE** (three chevrons down) | Apply the brakes with the specified force. Release at the target speed |
+| **DRIVE** (one bar) | Drive the set distance. Do not brake. The brakes become more cool |
+| **COOLDOWN** (wave symbol) | Drive the cooldown distance with minimum braking |
 
-**Pause** freezes the run, **Skip stage** jumps to the next one if the road runs out, and
-**Stop** ends it. If GPS drops out the run pauses itself rather than guessing.
+**Pause** stops the procedure temporarily. **Next stage** goes to the subsequent stage
+if your road is too short. **Stop** ends the run. If the GPS signal goes off, the run
+stops until the signal is available again.
 
-## How it works
+## How the app operates
 
-The interesting part is `engine/BeddingEngine.kt`. It is a pure function — no Android
-imports, no timers, no callbacks — that takes a state and an event and returns the next
-state. A whole procedure is `events.fold(initial, engine::reduce)`, which means a
-thirty-stop run can be tested in microseconds without a device.
+The important part is `engine/BeddingEngine.kt`. It is a pure function, with no Android
+imports, no timers, and no callbacks. It gets a state and an event, and it returns the
+subsequent state. Because of this, a test can do a full run of thirty stops in
+microseconds, without a device.
 
 ```
-LocationSpeedSource ──▶ RunViewModel ──▶ BeddingEngine ──▶ RunState ──▶ RunScreen
-   (GPS fixes)          (4 Hz ticks,      (pure reducer)                 (Compose)
-                         staleness)
+LocationSpeedSource ──▶ RunController ──▶ BeddingEngine ──▶ RunState ──▶ RunScreen
+   (GPS data)           (4 Hz timing,     (pure reducer)                 (Compose)
+                         signal checks)
 ```
 
-Two consequences worth calling out:
+Two design points:
 
-- **The three-second speed hold is a countdown decremented by each tick's own delta**,
-  not a scheduled callback. There is no concurrency in the run loop at all, so overlapping
-  timers are not a bug that was fixed but a state that cannot be represented.
-- **Procedures are stored in SI units** and converted only at the UI boundary, so
-  switching between mph and km/h converts what you see without touching the routine.
+- **Each timing step decreases the hold countdown by the duration of that step.** There
+  is no scheduled callback and no concurrency in the run loop. Because of this, timer
+  races are not possible.
+- **The app keeps procedures in SI units.** It converts the values only for the
+  display. When you change between mph and km/h, the procedure does not change.
 
-Stages are a `@Serializable sealed interface` with one generated polymorphic serializer
-used for both reading and writing, so the stored form and the parsed form cannot disagree.
+The stages are a `@Serializable sealed interface` with one generated serializer for
+write and read. Because of this, the stored form and the parsed form are always the
+same.
 
-## Building
+## Build instructions
 
-Requires JDK 17 or newer. Everything else is fetched by the Gradle wrapper.
+You must have JDK 17 or newer. The Gradle wrapper downloads the other components.
 
 ```bash
 git clone https://github.com/nicglazkov/brake-bedding.git
 cd brake-bedding
-./gradlew assembleDebug          # APK at app/build/outputs/apk/debug/
-./gradlew testDebugUnitTest      # unit tests
+./gradlew assembleDebug          # The APK goes to app/build/outputs/apk/debug/
+./gradlew testDebugUnitTest      # The unit tests
 ```
 
-Minimum Android 8.0 (API 26). Compiled against API 37, targets API 36.
+The minimum version is Android 8.0 (API 26). The app compiles against API 37 and has a
+target of API 36.
 
 ### Release signing
 
-Release builds are signed from a `keystore.properties` at the repository root, which is
-gitignored and never committed:
+The release build gets its signature data from a `keystore.properties` file in the root
+of the repository. Git ignores this file. Do not commit it.
 
 ```properties
 storeFile=/absolute/path/to/your.jks
@@ -139,20 +146,26 @@ keyAlias=...
 keyPassword=...
 ```
 
-Without that file the project still configures and builds; only the release variant comes
-out unsigned. That is what CI does, which keeps the build honest about not needing any
-maintainer-only material.
+The project also builds without this file. Then the release APK has no signature. CI
+operates in this condition. This shows that the build is possible without data that
+only the maintainer has.
 
 ## Privacy
 
-The app has no internet permission. Your location is read from the device's GPS, used to
-drive the state machine, and never stored or transmitted.
+The app has no permission to use the network. The app reads your location from the GPS
+receiver in the device. The app uses the location only for the speed calculation. The
+location data stays on the device.
 
-## Licence
+## Language
 
-Apache 2.0 — see [LICENSE](LICENSE).
+The text in the app and in this repository obeys ASD-STE100 (Simplified Technical
+English) as much as possible without the licensed STE dictionary and a checker tool.
+
+## License
+
+Apache 2.0 — refer to [LICENSE](LICENSE).
 
 ## Disclaimer
 
-Provided as-is, without warranty. You are responsible for your own safety and for
-following your brake manufacturer's recommendations.
+The app comes as-is, without a warranty. You are responsible for your safety. Obey the
+recommendations from your brake manufacturer.

@@ -4,9 +4,9 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 /**
- * Speeds and distances are stored in SI units everywhere inside the app and converted
- * only when they are shown to or entered by the user. Keeping one canonical unit means
- * the engine never has to know which unit the user prefers.
+ * The app keeps all speeds and all distances in SI units. It converts the values only
+ * for the display and for the user input. There is one internal unit. Because of
+ * this, the selected unit system has no effect on the engine.
  */
 object Units {
     const val METERS_PER_MILE = 1609.344
@@ -26,8 +26,8 @@ object Units {
 }
 
 /**
- * The unit system the user reads and writes values in. Procedures are portable between
- * systems because they are stored in SI regardless of which one is selected.
+ * The unit system for the display and for the user input. A procedure operates with
+ * each system, because the app keeps the values in SI units.
  */
 enum class UnitSystem(
     val speedLabel: String,
@@ -57,18 +57,19 @@ enum class UnitSystem(
         METRIC -> Units.kilometersToMeters(value)
     }
 
-    /** Whole-number speed, which is all a driver can act on at a glance. */
+    /** The speed as a whole number. A driver cannot use more precision. */
     fun formatSpeed(mps: Double): String = speedFromMps(mps).roundToInt().toString()
 
     fun formatSpeedWithUnit(mps: Double): String = "${formatSpeed(mps)} $speedLabel"
 
     /**
-     * Distances shrink towards zero during a run, so the precision grows as the number
-     * gets small — "0.42 mi" is useful, "0 mi" for anything under half a mile is not.
+     * A distance decreases to zero during a run. Because of this, the precision
+     * increases when the number becomes small. "0.42 mi" is useful. "0 mi" for all
+     * distances below a half mile is not useful.
      *
-     * Formatted in the reader's locale, so a decimal comma appears where that is what the
-     * driver expects. Values that have to be parsed back, such as the contents of an
-     * editable field, must not use this.
+     * The format uses the locale of the user. Then a decimal comma shows where the
+     * driver expects one. Do not use this function for values that the app parses
+     * again, for example the content of an input field.
      */
     fun formatDistance(meters: Double): String {
         val value = distanceFromMeters(meters)

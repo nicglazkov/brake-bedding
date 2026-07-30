@@ -7,12 +7,12 @@ import android.util.Log
 import java.util.Locale
 
 /**
- * Speaks the next instruction so the driver does not have to look at the phone.
+ * Speaks each instruction. Then it is not necessary for the driver to look at the
+ * phone.
  *
- * This is the feature that makes the app usable as intended: at 70 mph, glancing at a
- * screen to find out whether it is time to brake is exactly the thing the app should be
- * removing. Cues are short on purpose — a sentence is too long to hear out before the
- * moment it describes has passed.
+ * This function makes the app safe for its purpose. At 70 mph, a look at a screen is
+ * the thing that the app must remove. The cues are short. This is intentional. A
+ * long sentence ends after the moment that it specifies.
  */
 class VoiceCoach(context: Context) {
 
@@ -26,9 +26,9 @@ class VoiceCoach(context: Context) {
                     language = Locale.getDefault().takeIf {
                         isLanguageAvailable(it) >= TextToSpeech.LANG_AVAILABLE
                     } ?: Locale.US
-                    // Tagging cues as navigation guidance is what makes car head units and
-                    // Bluetooth stacks duck the music rather than talk over it, the same
-                    // treatment turn-by-turn directions get.
+                    // The cues have the navigation-guidance audio type. Because of
+                    // this, vehicle audio units decrease the music volume for a cue.
+                    // Navigation instructions get the same audio treatment.
                     setAudioAttributes(
                         AudioAttributes.Builder()
                             .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
@@ -45,10 +45,10 @@ class VoiceCoach(context: Context) {
     }
 
     /**
-     * Says [text], dropping anything still queued.
+     * Speaks [text] and discards the cues that are in the queue.
      *
-     * Flushing rather than queueing is deliberate: a stale instruction is worse than
-     * silence, because the driver will act on whatever they hear last.
+     * The discard is intentional. An old instruction is worse than silence. The
+     * driver obeys the last instruction that they hear.
      */
     fun say(text: String) {
         if (!ready) return

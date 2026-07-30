@@ -54,9 +54,9 @@ private fun BrakeBeddingApp() {
         contract = ActivityResultContracts.RequestMultiplePermissions(),
     ) { runViewModel.refreshPermissionState() }
 
-    // The run's foreground-service notification needs POST_NOTIFICATIONS on 33+. Asked
-    // for at the moment it becomes relevant — the first Start — and the run proceeds
-    // whatever the answer; denial only costs the shade notification, not the service.
+    // On Android 13 and newer, the run notification is possible only with the
+    // POST_NOTIFICATIONS permission. The app asks at the first Start. The run starts
+    // with each answer. A refusal only hides the notification. The service operates.
     val context = androidx.compose.ui.platform.LocalContext.current
     val notificationLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),

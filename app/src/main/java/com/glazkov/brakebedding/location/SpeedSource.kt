@@ -2,21 +2,21 @@ package com.glazkov.brakebedding.location
 
 import kotlinx.coroutines.flow.Flow
 
-/** What the location stack currently knows about how fast the car is moving. */
+/** The speed data that the location system supplies. */
 sealed interface SpeedReading {
 
-    /** Listening, but no usable fix has arrived yet. */
+    /** The app listens, but no usable data came in until now. */
     data object Acquiring : SpeedReading
 
-    /** Location services are switched off, so there is nothing to wait for. */
+    /** The location function is off. No data will come. */
     data object ProviderDisabled : SpeedReading
 
     /**
-     * A speed fix.
+     * One speed measurement.
      *
-     * [atElapsedRealtimeMillis] comes from the monotonic clock rather than wall time.
-     * Wall time can step backwards when the network corrects the clock, which would make
-     * a fresh fix look stale and freeze a run mid-procedure.
+     * [atElapsedRealtimeMillis] comes from the monotonic clock, not from the wall
+     * clock. The wall clock can move back when the network corrects the time. Then
+     * new data would look old, and the run would stop during the procedure.
      */
     data class Fix(
         val speedMps: Double,
@@ -26,10 +26,10 @@ sealed interface SpeedReading {
 }
 
 /**
- * Where speed comes from.
+ * The source of the speed.
  *
- * Behind an interface so a run can be driven by synthetic samples in tests and, during
- * development, by the emulator's mock location without the engine knowing the difference.
+ * This is an interface. Because of this, tests can supply their own samples, and the
+ * emulator can supply its own location. The engine does not see a difference.
  */
 interface SpeedSource {
     fun readings(): Flow<SpeedReading>

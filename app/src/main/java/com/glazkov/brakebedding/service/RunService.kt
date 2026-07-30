@@ -25,13 +25,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
- * Keeps a run alive while the app is not on screen.
+ * Keeps a run alive when the app is not on the screen.
  *
- * The run itself lives in [RunController]; this service exists so the OS keeps the
- * process and its GPS feed running when the driver takes a call or the screen turns
- * off mid-procedure, and so the current instruction is visible in the notification
- * shade. It observes the controller and stops itself the moment the run is over —
- * it owns nothing.
+ * The run is in [RunController]. This service makes sure that Android keeps the
+ * process and the GPS data active when the driver gets a call or the screen goes
+ * off. It also shows the applicable instruction in the notification. The service
+ * monitors the controller and stops itself when the run ends. It owns no data.
  */
 class RunService : Service() {
 
@@ -50,17 +49,17 @@ class RunService : Service() {
             ACTION_STOP -> controller.stop()
         }
 
-        // startForeground must happen promptly after startForegroundService, on every
-        // start including the action re-deliveries.
+        // startForeground must occur quickly after startForegroundService. This is
+        // applicable to each start, and also to the starts that supply an action.
         startAsForeground()
         observeRun()
         return START_NOT_STICKY
     }
 
     /**
-     * The whole point of the app is coaching a moving car, so if the user swipes the
-     * task away the least surprising outcome is that the run ends — not that a voice
-     * keeps issuing brake instructions from an app that is no longer anywhere visible.
+     * If the user removes the task, the run ends. This is the result that the user
+     * expects. A voice with brake instructions from an app that is not visible is
+     * not safe.
      */
     override fun onTaskRemoved(rootIntent: Intent?) {
         controller.stop()
@@ -96,11 +95,12 @@ class RunService : Service() {
         observing = true
         scope.launch {
             controller.state
-                // Re-render only when something the notification shows has changed;
-                // updating on every 250ms tick would spam the shade. Distance is
-                // bucketed to 200m so the "to go" figure keeps moving through a gap or
-                // cooldown — without it in the key, the title froze at the distance the
-                // phase started with — while still updating seconds apart, not 4/sec.
+                // The notification changes only when its content changes. A change at
+                // each 250 ms tick would be too frequent. The distance is in steps of
+                // 200 m. Because of this, the distance in the title moves through a
+                // gap or a cooldown, but the notification changes only after some
+                // seconds. Without the distance in the key, the title kept the
+                // initial distance of the phase.
                 .map {
                     NotificationKey(
                         phase = it.run.phase,
@@ -115,8 +115,9 @@ class RunService : Service() {
                     if (key.phase.isRunning) {
                         notificationManager.notify(NOTIFICATION_ID, buildNotification())
                     } else {
-                        // FINISHED leaves a final, dismissible summary; IDLE means the
-                        // user stopped the run and wants nothing left behind.
+                        // FINISHED keeps a last summary that the user can remove.
+                        // IDLE shows that the user stopped the run. Then the app
+                        // removes the notification.
                         if (key.phase == RunPhase.FINISHED) {
                             ServiceCompat.stopForeground(this@RunService, ServiceCompat.STOP_FOREGROUND_DETACH)
                             notificationManager.notify(NOTIFICATION_ID, buildNotification())
@@ -145,8 +146,8 @@ class RunService : Service() {
         val phase = snapshot.run.phase
 
         val title = when {
-            snapshot.run.isPaused -> "Paused"
-            phase == RunPhase.FINISHED -> "Bedded"
+            snapshot.run.isPaused -> "The run is on pause"
+            phase == RunPhase.FINISHED -> "The procedure is complete"
             else -> instructionFor(snapshot, units)
         }
         val text = when (phase) {
@@ -182,7 +183,7 @@ class RunService : Service() {
         if (phase.isRunning) {
             builder.addAction(
                 0,
-                if (snapshot.run.isPaused) "Resume" else "Pause",
+                if (snapshot.run.isPaused) "Continue" else "Pause",
                 serviceAction(ACTION_TOGGLE_PAUSE),
             )
             builder.addAction(0, "Stop", serviceAction(ACTION_STOP))
@@ -191,23 +192,30 @@ class RunService : Service() {
         return builder.build()
     }
 
+    /** The notification titles obey ASD-STE100. */
     private fun instructionFor(snapshot: RunSnapshot, units: UnitSystem): String {
         val stage = snapshot.currentStage
         return when (snapshot.run.phase) {
             RunPhase.SPEED_UP -> (stage as? BeddingStage)
-                ?.let { "Speed up to ${units.formatSpeedWithUnit(it.startSpeedMps)}" } ?: "Speed up"
+                ?.let { "Increase speed to ${units.formatSpeedWithUnit(it.startSpeedMps)}" }
+                ?: "Increase speed"
 
             RunPhase.SLOW_DOWN -> (stage as? BeddingStage)
-                ?.let { "Slow to ${units.formatSpeedWithUnit(it.startSpeedMps)}" } ?: "Slow down"
+                ?.let { "Decrease speed to ${units.formatSpeedWithUnit(it.startSpeedMps)}" }
+                ?: "Decrease speed"
 
             RunPhase.HOLD -> (stage as? BeddingStage)
-                ?.let { "Hold ${units.formatSpeedWithUnit(it.startSpeedMps)}" } ?: "Hold speed"
+                ?.let { "Hold ${units.formatSpeedWithUnit(it.startSpeedMps)}" } ?: "Hold this speed"
 
             RunPhase.BRAKE -> (stage as? BeddingStage)
                 ?.let { "Brake to ${units.formatSpeedWithUnit(it.targetSpeedMps)}" } ?: "Brake"
 
-            RunPhase.GAP -> "Coast — ${units.formatDistanceWithUnit(snapshot.run.remainingMeters)} to go"
-            RunPhase.COOLDOWN -> "Cool down — ${units.formatDistanceWithUnit(snapshot.run.remainingMeters)} to go"
+            RunPhase.GAP ->
+                "Drive ${units.formatDistanceWithUnit(snapshot.run.remainingMeters)} more"
+
+            RunPhase.COOLDOWN ->
+                "Cooldown: drive ${units.formatDistanceWithUnit(snapshot.run.remainingMeters)} more"
+
             else -> "Brake bedding"
         }
     }
@@ -227,11 +235,11 @@ class RunService : Service() {
         val channel = NotificationChannel(
             CHANNEL_ID,
             "Active run",
-            // Low importance: the voice cues carry urgency; the notification is for
-            // glancing at the shade, not for making noise of its own.
+            // Low importance. The voice gives the urgent cues. The notification is
+            // only for the eyes, and it must not make its own sound.
             NotificationManager.IMPORTANCE_LOW,
         ).apply {
-            description = "Shows the current instruction while a bedding run is active"
+            description = "Shows the applicable instruction when a run is active"
             setShowBadge(false)
         }
         notificationManager.createNotificationChannel(channel)

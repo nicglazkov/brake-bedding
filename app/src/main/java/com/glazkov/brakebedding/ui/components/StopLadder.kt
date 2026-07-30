@@ -13,15 +13,12 @@ import com.glazkov.brakebedding.data.CooldownStage
 import com.glazkov.brakebedding.data.Procedure
 
 /**
- * The whole procedure as one strip: a tick per stop, grouped by stage.
+ * The full procedure as one strip. Each stop is one mark. The stages are groups.
  *
- * This answers the question a driver actually forms between stops — "how many more of
- * these?" — which a percentage or a "cycle 7 of 20" line does not, because the shape of
- * the remaining work is the useful part. It sits at the top edge rather than the centre
- * because it belongs to the unhurried glance during a coast, not to the braking moment.
- *
- * The original project shipped a custom view for something like this and then removed it
- * again, unused; this is that idea rebuilt around what the run actually needs to show.
+ * Between the stops, the driver asks "how many stops remain?". This strip shows the
+ * answer. A percentage does not, because the shape of the work that remains is the
+ * useful part. The strip is at the top edge, not in the center. The driver looks at
+ * it in the calm gap phase, not in the brake moment.
  */
 @Composable
 fun StopLadder(
@@ -33,8 +30,8 @@ fun StopLadder(
 ) {
     if (procedure.stages.isEmpty()) return
 
-    // A cooldown is one long stretch rather than a count of stops, so it is given the
-    // width of a few stops to read as the sustained thing it is.
+    // A cooldown is one long segment, not a count of stops. It gets the width of
+    // some stops. Then it looks like the long segment that it is.
     val weights = procedure.stages.map { stage ->
         when (stage) {
             is BeddingStage -> stage.numberOfStops

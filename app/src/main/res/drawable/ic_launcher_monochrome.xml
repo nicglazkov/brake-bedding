@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Themed-icon layer for Android 13 and newer. The system tints this with the user's
-  wallpaper palette, so it is a single flat colour and has to read purely as a silhouette:
-  the disc becomes a ring, and only the holes and bore carry the rotor idea.
+  The themed-icon layer for Android 13 and newer. The system gives it the color of
+  the wallpaper. Because of this, it is one flat color, and only its outline carries
+  the meaning. The disc becomes a ring. The holes and the bore show the rotor.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"

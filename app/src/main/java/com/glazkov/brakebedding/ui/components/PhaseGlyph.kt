@@ -14,12 +14,12 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import com.glazkov.brakebedding.engine.RunPhase
 
 /**
- * A shape that identifies the phase without relying on its colour.
+ * A symbol that identifies the phase without its color.
  *
- * Red-green is the pair the most common form of colour blindness collapses, and it is
- * also the pair carrying this app's two most consequential instructions. Chevron count
- * and direction encode the same information redundantly: up means go, down means shed
- * speed, and more chevrons means more urgency.
+ * The usual type of color blindness makes red and green look the same. Those two
+ * colors carry the two most important instructions of this app. The chevron count
+ * and the chevron direction give the same data again: up is "increase speed", down
+ * is "decrease speed", and more chevrons show more urgency.
  */
 @Composable
 fun PhaseGlyph(
@@ -66,7 +66,7 @@ private fun DrawScope.chevrons(count: Int, pointingUp: Boolean, tint: Color, str
                 lineTo(width, top)
             }
         }
-        // Leading chevrons fade slightly so the set reads as a direction of travel.
+        // The first chevrons are lighter. Then the set shows a direction of movement.
         val fade = if (count == 1) 1f else 0.55f + 0.45f * (index / (count - 1f))
         drawPath(path, color = tint.copy(alpha = tint.alpha * fade), style = stroke)
     }

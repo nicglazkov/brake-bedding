@@ -6,14 +6,13 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
 /**
- * Reads procedures written by versions of the app that stored a Gson-encoded list in
+ * Reads procedures from old app versions. Those versions kept a Gson list in
  * SharedPreferences.
  *
- * The legacy format kept speeds in mph and distances in miles, and tagged entries with a
- * "type" discriminator that later versions added but never read back. This parser is
- * intentionally hand-written and frozen: it describes a format that no longer exists
- * anywhere else in the codebase, so it must not be refactored to share code with the
- * current model.
+ * The old format kept speeds in mph and distances in miles. It also set a "type"
+ * value that the old versions wrote but did not read. This parser is manual, and it
+ * must not change. It specifies a format that is not in the code at an other
+ * location. Do not connect it to the current model.
  */
 object LegacyMigration {
 
@@ -23,9 +22,9 @@ object LegacyMigration {
     private val lenientJson = Json { ignoreUnknownKeys = true; isLenient = true }
 
     /**
-     * Converts a legacy JSON payload into a [Procedure], skipping any entry that cannot
-     * be read. Returns null when there is nothing salvageable, so callers can fall back
-     * to a preset.
+     * Converts old JSON data into a [Procedure]. The parser discards each entry that
+     * it cannot read. It returns null if no entry is usable. Then the caller can use
+     * a preset.
      */
     fun parse(legacyJson: String): Procedure? {
         val stages = try {
@@ -41,7 +40,7 @@ object LegacyMigration {
         mapValues { (_, value) -> value.jsonPrimitive.content }
 
     private fun parseStage(fields: Map<String, String>): Stage? {
-        // Entries written before the cooldown feature existed carry no discriminator.
+        // Entries from before the cooldown function have no "type" value.
         val type = fields["type"] ?: "bedding"
         return try {
             when (type) {
@@ -70,7 +69,7 @@ object LegacyMigration {
         }
     }
 
-    /** Legacy data stored either the enum name or, in the oldest builds, nothing at all. */
+    /** Old data kept the enum name, the display name, or no value. */
     private fun parseIntensity(raw: String?): BrakingIntensity {
         if (raw == null) return BrakingIntensity.MODERATE
         BrakingIntensity.entries.firstOrNull { it.name == raw }?.let { return it }

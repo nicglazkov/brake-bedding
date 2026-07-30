@@ -189,8 +189,8 @@ fun EditorScreen(
             if (!state.procedure.hasCooldown && state.procedure.stages.isNotEmpty()) {
                 item {
                     Text(
-                        text = "There is no cooldown at the end. Driving the heat out of " +
-                            "the brakes is part of bedding them, not an optional extra.",
+                        text = "This procedure has no cooldown stage. A cooldown is a " +
+                            "necessary part of the procedure. Add a cooldown stage at the end.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.error,
                     )
@@ -250,16 +250,16 @@ private fun StageCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(onClick = onMoveUp, enabled = canMoveUp) {
-                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Move earlier")
+                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Move the stage up")
                 }
                 IconButton(onClick = onMoveDown, enabled = canMoveDown) {
-                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Move later")
+                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Move the stage down")
                 }
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit stage")
+                    Icon(Icons.Default.Edit, contentDescription = "Edit the stage")
                 }
                 IconButton(onClick = onRemove) {
-                    Icon(Icons.Default.Delete, contentDescription = "Remove stage")
+                    Icon(Icons.Default.Delete, contentDescription = "Remove the stage")
                 }
             }
         }
@@ -270,12 +270,12 @@ private fun StageCard(
 private fun EmptyState() {
     Column(modifier = Modifier.padding(vertical = 32.dp)) {
         Text(
-            text = "No stages yet",
+            text = "This procedure has no stages",
             style = MaterialTheme.typography.titleMedium,
         )
         Spacer(Modifier.height(6.dp))
         Text(
-            text = "Start from a preset, or build the routine your pads came with.",
+            text = "Start from a preset, or add the stages that the pad manufacturer specifies.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

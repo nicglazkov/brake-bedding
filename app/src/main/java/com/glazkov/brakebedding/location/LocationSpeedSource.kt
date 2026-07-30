@@ -14,16 +14,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 /**
- * Speed from the platform's GPS provider.
+ * The speed from the GPS provider of the platform.
  *
- * This deliberately uses [LocationManager] rather than Play Services' fused provider.
- * The fused provider is better at blending sensors for position, but this app only wants
- * the Doppler-derived ground speed that GPS reports directly, and staying on the platform
- * API keeps the app free of proprietary dependencies.
+ * This class uses [LocationManager], not the fused provider from Play Services. This
+ * is intentional. The fused provider is better for position, but this app only wants
+ * the ground speed that GPS reports directly. Also, the platform API keeps the app
+ * free of components that are not open source.
  */
 class LocationSpeedSource(private val context: Context) : SpeedSource {
 
-    @SuppressLint("MissingPermission") // Guarded by hasPermission() before every use.
+    @SuppressLint("MissingPermission") // hasPermission() is checked before each use.
     override fun readings(): Flow<SpeedReading> = callbackFlow {
         val manager = ContextCompat.getSystemService(context, LocationManager::class.java)
         if (manager == null || !hasPermission()) {
@@ -52,8 +52,8 @@ class LocationSpeedSource(private val context: Context) : SpeedSource {
             }
         }
 
-        // GPS reports about once a second. Asking for zero, as the previous version did,
-        // buys nothing and costs battery on a screen-on drive that runs for half an hour.
+        // GPS reports approximately one time each second. A request for a zero
+        // interval, as in the first version, gives no gain and uses more battery.
         manager.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
             MIN_UPDATE_INTERVAL_MS,
@@ -61,8 +61,8 @@ class LocationSpeedSource(private val context: Context) : SpeedSource {
             listener,
         )
 
-        // Seed with the last known fix so a run started in a moving car does not sit on
-        // "waiting for GPS" for a second longer than it has to.
+        // Start with the last known data. Then a run that starts in a vehicle that
+        // moves does not show the GPS message for more time than necessary.
         runCatching { manager.getLastKnownLocation(LocationManager.GPS_PROVIDER) }
             .getOrNull()
             ?.takeIf { it.isRecent() }
@@ -76,9 +76,9 @@ class LocationSpeedSource(private val context: Context) : SpeedSource {
             PackageManager.PERMISSION_GRANTED
 
     /**
-     * True when the user granted only approximate location. Speed still arrives, but it
-     * is derived from a coarse position and is not good enough to hold a speed against,
-     * so the UI says so rather than quietly misleading the driver.
+     * True when the user gave access only to the approximate location. Speed data
+     * comes in, but its source is a position with low accuracy. That is not
+     * sufficient to hold a speed. The UI tells this to the driver.
      */
     fun hasOnlyCoarsePermission(): Boolean =
         !hasPermission() &&

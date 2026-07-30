@@ -34,9 +34,9 @@ data class RunUiState(
 /**
  * A window onto [RunController] for the run screen.
  *
- * The run itself does not live here — a ViewModel dies with its activity, and a bedding
- * run must not. This class only feeds the controller the stored procedure and settings,
- * and republishes the controller's state in the shape the screen consumes.
+ * The run is not here. A ViewModel stops with its activity, and a bedding run must
+ * not stop. This class only supplies the stored procedure and the settings to the
+ * controller. It also converts the controller state into the shape for the screen.
  */
 class RunViewModel(
     private val procedureRepository: ProcedureRepository,

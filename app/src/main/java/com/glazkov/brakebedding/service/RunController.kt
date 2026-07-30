@@ -30,31 +30,31 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-/** Why the run screen might not be receiving usable speed. */
+/** The possible causes when the run screen does not get a usable speed. */
 enum class SignalStatus {
-    /** Fixes are arriving. */
+    /** Speed data comes in. */
     OK,
 
-    /** Listening, nothing yet. */
+    /** The app listens, but no data came in until now. */
     ACQUIRING,
 
-    /** Fixes stopped arriving mid-run. */
+    /** Speed data stopped during the run. */
     LOST,
 
-    /** Location services are switched off. */
+    /** The location function of the device is off. */
     GPS_OFF,
 
-    /** The user has not granted location access. */
+    /** The user did not give access to the location. */
     NO_PERMISSION,
 
-    /** Only approximate location was granted, which is not precise enough. */
+    /** The user gave access only to the approximate location. That is not sufficient. */
     COARSE_ONLY,
     ;
 
     val isUsable: Boolean get() = this == OK
 }
 
-/** Everything the run currently is, independent of any screen. */
+/** The full state of the run. It is independent of all screens. */
 data class RunSnapshot(
     val procedure: Procedure = Procedure(),
     val run: RunState = RunState(),
@@ -66,16 +66,16 @@ data class RunSnapshot(
 }
 
 /**
- * Owns the run: the engine, the tick loop, the speed feed and the cues.
+ * The owner of the run: the engine, the tick loop, the speed source, and the cues.
  *
- * This is deliberately not inside a ViewModel. A ViewModel's scope dies with its
- * activity, so a run driven from there stops ticking the moment the app is backgrounded
- * long enough to be destroyed — mid-procedure, at speed, with no warning. The controller
- * is application-scoped and [RunService] holds the process alive around it; the
- * ViewModel is reduced to a window onto this state.
+ * This is not in a ViewModel. This is intentional. The scope of a ViewModel stops with
+ * its activity. A run in a ViewModel stops when Android removes the activity, with no
+ * warning to the driver. This controller has application scope, and [RunService] keeps
+ * the process alive around it. The ViewModel is only a window onto this state.
  */
-// The static instance holds a Context, which lint flags as a leak; get() only ever
-// passes the application context here, which lives as long as the process regardless.
+// The static instance keeps a Context. Lint reports this as a possible leak. But
+// get() only supplies the application context. That context lives as long as the
+// process.
 @Suppress("StaticFieldLeak")
 class RunController private constructor(private val context: Context) {
 
@@ -98,7 +98,7 @@ class RunController private constructor(private val context: Context) {
         refreshSignal()
     }
 
-    /** The stored procedure changed; a running engine keeps its own copy until it ends. */
+    /** The stored procedure changed. An active engine keeps its copy until the run ends. */
     fun setProcedure(procedure: Procedure) {
         if (!_state.value.run.phase.isRunning) {
             engine = BeddingEngine(procedure)
@@ -118,8 +118,8 @@ class RunController private constructor(private val context: Context) {
         engine = BeddingEngine(procedure)
         applyEvent(RunEvent.Start)
         startTicking()
-        // The service exists to keep this controller alive and visible while the app is
-        // backgrounded; it observes the state flow and stops itself when the run ends.
+        // The service keeps this controller alive when the app is not on the screen.
+        // The service monitors the state flow and stops itself when the run ends.
         val intent = Intent(context, RunService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent)
@@ -147,16 +147,16 @@ class RunController private constructor(private val context: Context) {
     // --- Speed and signal ---------------------------------------------------------------
 
     /**
-     * Re-reads permission and provider state; called from the UI after the permission
-     * dialog resolves and on every resume, since location can be granted from system
-     * settings without the app hearing about it.
+     * Reads the permission state and the provider state again. The UI calls this after
+     * the permission dialog and at each resume. This is necessary because the user can
+     * give access in the system settings, and the app gets no message about it.
      */
     fun refreshPermissionState() {
         refreshSignal()
         if (speedSource.hasPermission()) observeSpeed()
     }
 
-    /** Starts collecting fixes, replacing any existing collector. */
+    /** Starts the collection of speed data. It replaces the last collector. */
     private fun observeSpeed() {
         speedJob?.cancel()
         speedJob = scope.launch {
@@ -211,8 +211,8 @@ class RunController private constructor(private val context: Context) {
 
                 refreshSignal()
 
-                // Without a trustworthy fix the run freezes rather than integrating a
-                // stale speed.
+                // If there is no good speed data, the run stops. It does not continue
+                // with old data.
                 val fix = latestFix
                 if (fix == null || isFixStale()) continue
 
@@ -256,48 +256,50 @@ class RunController private constructor(private val context: Context) {
         }
     }
 
+    /** The spoken cues obey ASD-STE100. The brake force names are technical names. */
     private fun cueFor(state: RunState, units: UnitSystem): String? {
         val stage = engine.currentStage(state)
         return when (state.phase) {
             RunPhase.SPEED_UP -> (stage as? BeddingStage)?.let {
-                "Speed up to ${units.formatSpeed(it.startSpeedMps)}"
+                "Increase speed to ${units.formatSpeed(it.startSpeedMps)}"
             }
 
             RunPhase.SLOW_DOWN -> (stage as? BeddingStage)?.let {
-                "Slow to ${units.formatSpeed(it.startSpeedMps)}"
+                "Decrease speed to ${units.formatSpeed(it.startSpeedMps)}"
             }
 
-            RunPhase.HOLD -> "Hold"
+            RunPhase.HOLD -> "Hold this speed"
 
             RunPhase.BRAKE -> (stage as? BeddingStage)?.let {
                 "${it.brakingIntensity.shortName} braking, now"
             } ?: "Brake now"
 
-            RunPhase.GAP -> "Coast"
+            RunPhase.GAP -> "Drive. Do not brake."
 
             RunPhase.COOLDOWN -> (stage as? CooldownStage)?.let {
-                "Cool down. ${units.formatDistance(it.distanceMeters)} ${units.distanceLabel}."
-            } ?: "Cool down"
+                "Cooldown. Drive ${units.formatDistance(it.distanceMeters)} " +
+                    "${units.distanceLabel} with minimum braking."
+            } ?: "Cooldown"
 
-            RunPhase.FINISHED -> "Procedure complete. Let the brakes cool before parking."
+            RunPhase.FINISHED -> "The procedure is complete. Let the brakes become cool before you park."
             RunPhase.IDLE -> null
         }
     }
 
     companion object {
         /**
-         * Four samples a second. GPS itself only produces about one, but ticking faster
-         * keeps the countdown and distance readouts smooth between fixes.
+         * Four ticks each second. GPS supplies approximately one sample each second.
+         * The higher tick rate keeps the countdown and the distance displays smooth.
          */
         const val TICK_INTERVAL_MS = 250L
 
-        /** How old a fix may be before the run stops trusting it. */
+        /** The maximum age of speed data that the run accepts. */
         const val STALE_FIX_MS = 3_000L
 
         @Volatile
         private var instance: RunController? = null
 
-        /** One controller per process; both the UI and the service talk to this one. */
+        /** One controller for each process. The UI and the service use this one object. */
         fun get(context: Context): RunController =
             instance ?: synchronized(this) {
                 instance ?: RunController(context.applicationContext).also { instance = it }
