@@ -85,4 +85,5 @@ jobs:
           xcodebuild -project BrakeBedding.xcodeproj -scheme BrakeBedding \
             -destination "generic/platform=iOS Simulator" \
             -configuration Debug build \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
             CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY=""
