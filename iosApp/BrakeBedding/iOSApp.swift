@@ -9,6 +9,16 @@ struct BrakeBeddingApp: App {
 
     init() {
         LiveActivityManager.shared.connect()
+
+        #if DEBUG
+        // A test hook for the simulator drive. The environment variable comes from
+        // simctl. Release builds do not contain this code.
+        if ProcessInfo.processInfo.environment["BB_AUTOSTART"] == "1" {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                Run.shared.controller.start()
+            }
+        }
+        #endif
     }
 
     var body: some Scene {
