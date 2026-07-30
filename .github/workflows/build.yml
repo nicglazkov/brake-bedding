@@ -55,9 +55,16 @@ jobs:
           path: shared/build/reports/tests/
 
   ios:
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
+
+      # Compose Multiplatform 1.11 uses classes from the iOS 26 SDK. Xcode 16 does
+      # not contain them, and the link stops.
+      - name: Select the newest Xcode 26
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)/Contents/Developer"
+          xcodebuild -version
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
