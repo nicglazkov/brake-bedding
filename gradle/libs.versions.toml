@@ -33,7 +33,7 @@ androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
-# Core icon set only. The "extended" artifact carries thousands of unused vectors.
+# Only the core icon set. The "extended" artifact contains thousands of icons that the app does not use.
 androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
@@ -49,6 +49,6 @@ androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", vers
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-# No kotlin-android entry: AGP 9 provides Kotlin itself and rejects that plugin.
+# There is no kotlin-android entry. AGP 9 contains Kotlin and refuses that plugin.
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BrakeBeddingApp"
+rootProject.name = "brake-bedding"
 include(":app")

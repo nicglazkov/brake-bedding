@@ -1,6 +1,6 @@
-// AGP 9 has built-in Kotlin support, so the org.jetbrains.kotlin.android plugin is no
-// longer applied here; AGP rejects it outright. The Compose and serialization compiler
-// plugins are still applied separately.
+// AGP 9 contains the Kotlin support. Because of this, the project does not apply the
+// org.jetbrains.kotlin.android plugin. AGP refuses that plugin. The Compose compiler
+// plugin and the serialization plugin stay separate.
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.compose) apply false
