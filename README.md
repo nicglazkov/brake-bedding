@@ -59,10 +59,15 @@ stops from one speed to a lower speed, with a set distance between the stops.
 
 ### iOS
 
-The iOS app comes through TestFlight. The public TestFlight link will be in this
-section when Apple completes the beta review. On iOS, the run instruction also shows
-as a Live Activity on the Lock Screen and in the Dynamic Island, with Pause and Stop
-buttons.
+The iOS app comes through TestFlight:
+**https://testflight.apple.com/join/KDtbBckw**
+
+1. Install the TestFlight app from the App Store.
+2. Open the link above on the device and accept the invitation.
+3. Give the app access to your accurate location when it asks.
+
+On iOS, the run instruction also shows as a Live Activity on the Lock Screen and in
+the Dynamic Island, with Pause and Stop buttons.
 
 ## Safety
 
