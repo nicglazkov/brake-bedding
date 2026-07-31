@@ -7,7 +7,8 @@
 <p align="center">
   <a href="https://github.com/nicglazkov/brake-bedding/actions/workflows/build.yml"><img src="https://github.com/nicglazkov/brake-bedding/actions/workflows/build.yml/badge.svg" alt="Build status" /></a>
   <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android 8.0 or newer" />
-  <img src="https://img.shields.io/badge/Kotlin-Compose-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin and Jetpack Compose" />
+  <a href="https://testflight.apple.com/join/KDtbBckw"><img src="https://img.shields.io/badge/iOS-TestFlight-0D96F6?logo=apple&logoColor=white" alt="iOS through TestFlight" /></a>
+  <img src="https://img.shields.io/badge/Kotlin-Multiplatform-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin Multiplatform with Compose" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0" /></a>
 </p>
 
@@ -22,15 +23,21 @@ consistent. The procedure is not complex, but it is difficult to do from memory:
 stops from one speed to a lower speed, with a set distance between the stops.
 
 <p align="center">
-  <img src="assets/ready.png" alt="The start screen. It shows the procedure and a Start button." width="30%" />
-  <img src="assets/hold.png" alt="The hold instruction. It shows the target speed and a countdown bar." width="30%" />
-  <img src="assets/brake.png" alt="The brake instruction. It shows the speed at which you release the brakes." width="30%" />
+  <img src="assets/ready.png" alt="Android: the start screen. It shows the procedure and a Start button." width="30%" />
+  <img src="assets/hold.png" alt="Android: the hold instruction. It shows the target speed and a countdown bar." width="30%" />
+  <img src="assets/brake.png" alt="Android: the brake instruction. It shows the speed at which you release the brakes." width="30%" />
+</p>
+<p align="center">
+  <img src="assets/ios-ready.png" alt="iOS: the start screen, identical to the Android screen." width="30%" />
+  <img src="assets/ios-brake.png" alt="iOS: the brake instruction, with the live speed from Core Location." width="30%" />
+  <img src="assets/ios-dynamic-island.png" alt="iOS: the run continues in the background. The Dynamic Island shows the phase." width="30%" />
 </p>
 <p align="center">
   <img src="assets/cooldown.png" alt="The cooldown instruction. It shows the distance that remains." width="30%" />
   <img src="assets/editor.png" alt="The procedure editor. It shows the list of stages." width="30%" />
   <img src="assets/guide.png" alt="The guide in the app." width="30%" />
 </p>
+<p align="center"><sub>Row 1: Android. Row 2: iOS, with the Live Activity in the Dynamic Island. Row 3: the shared screens.</sub></p>
 
 ## Functions
 
@@ -41,9 +48,12 @@ stops from one speed to a lower speed, with a set distance between the stops.
 - Each instruction also has its own symbol. You do not identify an instruction only by
   its color
 - A progress bar at the top shows the stops that remain
-- The run continues when a call comes in or when the screen goes off. The instruction
-  stays in the notification, with Pause and Stop controls
+- The run continues when a call comes in or when the screen goes off. On Android, the
+  instruction stays in the notification. On iOS, it stays in a Live Activity on the
+  Lock Screen and in the Dynamic Island. The two surfaces have Pause and Stop controls
 - You can edit the stages, start from three presets, and select mph or km/h
+- The two apps come from one Kotlin Multiplatform codebase. The engine, the screens,
+  and the texts are identical on the two platforms
 
 ## Installation
 
