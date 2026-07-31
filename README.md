@@ -5,9 +5,15 @@
 <h1 align="center">Brake Bedding</h1>
 
 <p align="center">
+  <a href="https://github.com/nicglazkov/brake-bedding/releases/latest"><img src="https://img.shields.io/badge/Android-Download%20the%20APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Download the Android APK from the latest release" /></a>
+  &nbsp;&nbsp;
+  <a href="https://testflight.apple.com/join/KDtbBckw"><img src="https://img.shields.io/badge/iOS-Join%20the%20TestFlight%20beta-0D96F6?style=for-the-badge&logo=apple&logoColor=white" alt="Join the iOS TestFlight beta" /></a>
+</p>
+
+<p align="center">
   <a href="https://github.com/nicglazkov/brake-bedding/actions/workflows/build.yml"><img src="https://github.com/nicglazkov/brake-bedding/actions/workflows/build.yml/badge.svg" alt="Build status" /></a>
   <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android 8.0 or newer" />
-  <a href="https://testflight.apple.com/join/KDtbBckw"><img src="https://img.shields.io/badge/iOS-TestFlight-0D96F6?logo=apple&logoColor=white" alt="iOS through TestFlight" /></a>
+  <img src="https://img.shields.io/badge/iOS-17%2B-0D96F6?logo=apple&logoColor=white" alt="iOS 17 or newer" />
   <img src="https://img.shields.io/badge/Kotlin-Multiplatform-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin Multiplatform with Compose" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0" /></a>
 </p>
