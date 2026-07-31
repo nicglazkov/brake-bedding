@@ -89,10 +89,12 @@ def finish():
         sys.exit("the build did not process in time")
 
     build_id = build["id"]
+    # The Info.plist already declares the encryption use. Then this value is set at
+    # the upload, and the API refuses a second write. That answer is acceptable.
     call("PATCH", f"/builds/{build_id}", {"data": {
         "type": "builds", "id": build_id,
-        "attributes": {"usesNonExemptEncryption": False}}})
-    print("compliance set")
+        "attributes": {"usesNonExemptEncryption": False}}}, ok_codes=(409, 422))
+    print("compliance confirmed")
 
     call("POST", f"/betaGroups/{os.environ['ASC_GROUP_ID']}/relationships/builds",
          {"data": [{"type": "builds", "id": build_id}]}, ok_codes=(409,))
