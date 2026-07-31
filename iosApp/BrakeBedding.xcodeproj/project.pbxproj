@@ -158,12 +158,10 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					697AFBA53D291C156E045C1D = {
-						DevelopmentTeam = W4PACKJ894;
-						ProvisioningStyle = Automatic;
+						DevelopmentTeam = M7D6YHVDNK;
 					};
 					C069764B2F2481B116482C1F = {
-						DevelopmentTeam = W4PACKJ894;
-						ProvisioningStyle = Automatic;
+						DevelopmentTeam = M7D6YHVDNK;
 					};
 				};
 			};
@@ -289,7 +287,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = W4PACKJ894;
+				DEVELOPMENT_TEAM = M7D6YHVDNK;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -347,7 +345,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = W4PACKJ894;
+				DEVELOPMENT_TEAM = M7D6YHVDNK;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -410,8 +408,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -430,6 +428,7 @@
 					Shared,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.glazkov.brakebedding;
+				PROVISIONING_PROFILE_SPECIFIER = "BrakeBedding AppStore";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -457,7 +456,8 @@
 		BF82CAAC84B0212AE3E7E670 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -467,6 +467,7 @@
 				);
 				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.glazkov.brakebedding.Widgets;
+				PROVISIONING_PROFILE_SPECIFIER = "BrakeBedding Widgets AppStore";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
