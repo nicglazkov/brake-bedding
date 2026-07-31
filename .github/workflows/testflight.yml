@@ -1,0 +1,151 @@
+name: TestFlight refresh
+
+# A TestFlight build stops after 90 days. This workflow runs two times each month.
+# It uploads a new build only when the newest build has less than 35 days of life.
+# Then the public TestFlight link operates without manual work.
+on:
+  schedule:
+    - cron: "0 14 1,15 * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Upload also when the newest build is fresh"
+        type: boolean
+        default: false
+
+jobs:
+  refresh:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the API key
+        env:
+          ASC_P8_BASE64: ${{ secrets.ASC_P8_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$ASC_P8_BASE64" | base64 -d > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+          pip3 install --quiet --break-system-packages pyjwt cryptography
+
+      - name: Stop when the newest build is fresh
+        if: ${{ !inputs.force }}
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_APP_ID: ${{ secrets.ASC_APP_ID }}
+        run: |
+          set +e
+          python3 scripts/testflight.py check-age
+          code=$?
+          set -e
+          if [ "$code" = "3" ]; then
+            echo "SKIP=true" >> "$GITHUB_ENV"
+          elif [ "$code" != "0" ]; then
+            exit "$code"
+          fi
+
+      - name: Set up JDK 17
+        if: env.SKIP != 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        if: env.SKIP != 'true'
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Select the newest Xcode 26
+        if: env.SKIP != 'true'
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)/Contents/Developer"
+          xcodebuild -version
+
+      - name: Install the signing identity and the profiles
+        if: env.SKIP != 'true'
+        env:
+          IOS_DIST_KEY_BASE64: ${{ secrets.IOS_DIST_KEY_BASE64 }}
+          IOS_DIST_CERT_BASE64: ${{ secrets.IOS_DIST_CERT_BASE64 }}
+          IOS_PROFILE_APP_BASE64: ${{ secrets.IOS_PROFILE_APP_BASE64 }}
+          IOS_PROFILE_WIDGETS_BASE64: ${{ secrets.IOS_PROFILE_WIDGETS_BASE64 }}
+        run: |
+          KC=$RUNNER_TEMP/build.keychain-db
+          KCPASS=$(uuidgen)
+          security create-keychain -p "$KCPASS" "$KC"
+          security set-keychain-settings -lut 21600 "$KC"
+          security unlock-keychain -p "$KCPASS" "$KC"
+          security list-keychains -d user -s "$KC" login.keychain-db
+          echo "$IOS_DIST_KEY_BASE64" | base64 -d > "$RUNNER_TEMP/dist.key"
+          echo "$IOS_DIST_CERT_BASE64" | base64 -d > "$RUNNER_TEMP/dist.cer"
+          security import "$RUNNER_TEMP/dist.key" -k "$KC" -T /usr/bin/codesign -A
+          security import "$RUNNER_TEMP/dist.cer" -k "$KC" -T /usr/bin/codesign -A
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KCPASS" "$KC" > /dev/null
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          for name in APP WIDGETS; do
+            var="IOS_PROFILE_${name}_BASE64"
+            echo "${!var}" | base64 -d > "$RUNNER_TEMP/$name.mobileprovision"
+            UUID=$(security cms -D -i "$RUNNER_TEMP/$name.mobileprovision" | plutil -extract UUID raw -o - -)
+            cp "$RUNNER_TEMP/$name.mobileprovision" "$HOME/Library/MobileDevice/Provisioning Profiles/$UUID.mobileprovision"
+          done
+          security find-identity -v -p codesigning "$KC"
+
+      - name: Make the Xcode project
+        if: env.SKIP != 'true'
+        run: |
+          brew install xcodegen
+          cd iosApp && xcodegen generate
+
+      - name: Archive
+        if: env.SKIP != 'true'
+        run: |
+          cd iosApp
+          # The build number comes from the date. Each run makes a higher number.
+          BUILD_NUMBER=$(date -u +%Y%m%d%H%M)
+          xcodebuild -project BrakeBedding.xcodeproj -scheme BrakeBedding \
+            -destination "generic/platform=iOS" \
+            -archivePath build/BrakeBedding.xcarchive archive \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER"
+
+      - name: Upload to App Store Connect
+        if: env.SKIP != 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          cd iosApp
+          cat > build/ExportOptions.plist <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>teamID</key><string>M7D6YHVDNK</string>
+            <key>signingCertificate</key><string>Apple Distribution</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.glazkov.brakebedding</key><string>BrakeBedding AppStore</string>
+              <key>com.glazkov.brakebedding.Widgets</key><string>BrakeBedding Widgets AppStore</string>
+            </dict>
+            <key>uploadSymbols</key><true/>
+          </dict>
+          </plist>
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath build/BrakeBedding.xcarchive \
+            -exportOptionsPlist build/ExportOptions.plist \
+            -exportPath build/export \
+            -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8 \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+
+      - name: Publish to the public group
+        if: env.SKIP != 'true'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_APP_ID: ${{ secrets.ASC_APP_ID }}
+          ASC_GROUP_ID: ${{ secrets.ASC_GROUP_ID }}
+        run: python3 scripts/testflight.py finish
