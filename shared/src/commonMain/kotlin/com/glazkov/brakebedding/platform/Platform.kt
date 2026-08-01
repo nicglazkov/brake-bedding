@@ -19,6 +19,17 @@ expect fun localizedDecimal(value: Double, decimals: Int): String
 /** The version name of the installed app, for the About section. */
 expect fun appVersionName(): String
 
+/** Opens [url] in the system browser. */
+expect fun openWebPage(url: String)
+
+/** The addresses of the project pages. One constant object keeps the links correct. */
+object Links {
+    const val WEBSITE = "https://nicglazkov.github.io/brake-bedding/"
+    const val PRIVACY = "https://nicglazkov.github.io/brake-bedding/privacy.html"
+    const val SUPPORT = "https://nicglazkov.github.io/brake-bedding/support.html"
+    const val SOURCE = "https://github.com/nicglazkov/brake-bedding"
+}
+
 /**
  * Formats [value] with [decimals] fraction digits and a dot separator, independent of
  * the locale. The result is safe to parse again.

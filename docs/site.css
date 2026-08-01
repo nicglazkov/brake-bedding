@@ -1,0 +1,92 @@
+/* The design system of the app, as a stylesheet: warm stone surfaces, one ember
+   accent, and monospace labels in capitals. */
+:root {
+  --bg: #fbf8f6;
+  --surface: #f3ede9;
+  --ink: #1c1917;
+  --muted: #55483f;
+  --line: #d8ccc4;
+  --ember: #c2410c;
+  --ember-deep: #7a2e0b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16120f;
+    --surface: #231d19;
+    --ink: #ede0d9;
+    --muted: #d7c3b8;
+    --line: #52443c;
+    --ember: #ea580c;
+    --ember-deep: #ffb98a;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 720px; margin: 0 auto; padding: 24px 20px 64px; }
+a { color: var(--ember); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* The gauge-cluster label style of the app. */
+.label {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ember);
+  font-weight: 600;
+}
+
+header.site { display: flex; align-items: center; gap: 14px; padding: 28px 0 8px; }
+header.site img { width: 56px; height: 56px; border-radius: 13px; }
+header.site .name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
+nav.crumbs { padding: 4px 0 24px; }
+nav.crumbs a { color: var(--muted); }
+
+h1 { font-size: 34px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 800; margin: 18px 0 12px; }
+h2 { font-size: 22px; font-weight: 700; margin: 36px 0 10px; }
+p, li { color: var(--muted); }
+p strong, li strong { color: var(--ink); }
+ul { padding-left: 22px; margin: 10px 0; }
+p { margin: 10px 0; }
+.updated { font-size: 14px; color: var(--muted); }
+
+.buttons { display: flex; flex-wrap: wrap; gap: 12px; margin: 26px 0; }
+.btn {
+  display: inline-block;
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 16px;
+  background: var(--ember);
+  color: #fff;
+}
+.btn:hover { background: var(--ember-deep); text-decoration: none; }
+@media (prefers-color-scheme: dark) { .btn:hover { background: var(--ember); opacity: .9; } }
+.btn.alt { background: transparent; color: var(--ember); border: 1.5px solid var(--line); }
+.btn.alt:hover { background: var(--surface); }
+
+.shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 30px 0; }
+.shots img {
+  width: 100%; border-radius: 18px; border: 1px solid var(--line); display: block;
+}
+@media (max-width: 560px) { .shots { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin: 16px 0;
+}
+footer.site {
+  max-width: 720px; margin: 0 auto; padding: 24px 20px 48px;
+  border-top: 1px solid var(--line);
+  font-size: 14px; color: var(--muted);
+  display: flex; flex-wrap: wrap; gap: 16px;
+}
+footer.site a { color: var(--muted); }
