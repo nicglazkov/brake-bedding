@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* The design system of the app, as Tailwind tokens: warm stone surfaces, one ember
+   accent, and monospace labels in capitals. The site adapts to the app, not the
+   app to the site. */
+:root {
+  --background: #fbf8f6;
+  --foreground: #1c1917;
+  --muted-fg: #55483f;
+  --surface: #f3ede9;
+  --line: #d8ccc4;
+  --ember: #c2410c;
+  --ember-deep: #7a2e0b;
+  --ember-soft: #ffe1d2;
+
+  --phase-up: #0b8a52;
+  --phase-down: #e8a317;
+  --phase-hold: #1668c4;
+  --phase-brake: #d92d20;
+  --phase-drive: #2c3742;
+  --phase-cool: #115e59;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #16120f;
+    --foreground: #ede0d9;
+    --muted-fg: #d7c3b8;
+    --surface: #231d19;
+    --line: #52443c;
+    --ember: #ea580c;
+    --ember-deep: #ffb98a;
+    --ember-soft: #3b2415;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted-fg: var(--muted-fg);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-ember: var(--ember);
+  --color-ember-deep: var(--ember-deep);
+  --color-ember-soft: var(--ember-soft);
+  --color-phase-up: var(--phase-up);
+  --color-phase-down: var(--phase-down);
+  --color-phase-hold: var(--phase-hold);
+  --color-phase-brake: var(--phase-brake);
+  --color-phase-drive: var(--phase-drive);
+  --color-phase-cool: var(--phase-cool);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The gauge-cluster label style of the app. */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ember);
+}
