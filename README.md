@@ -5,6 +5,11 @@
 <h1 align="center">Brake Bedding</h1>
 
 <p align="center">
+  <strong><a href="https://nicglazkov.github.io/brake-bedding/">nicglazkov.github.io/brake-bedding</a></strong><br>
+  <sub>The project home: the app, the privacy policy, and the support page.</sub>
+</p>
+
+<p align="center">
   <a href="https://github.com/nicglazkov/brake-bedding/releases/latest"><img src="https://img.shields.io/badge/Android-Download%20the%20APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Download the Android APK from the latest release" /></a>
   &nbsp;&nbsp;
   <a href="https://testflight.apple.com/join/KDtbBckw"><img src="https://img.shields.io/badge/iOS-Join%20the%20TestFlight%20beta-0D96F6?style=for-the-badge&logo=apple&logoColor=white" alt="Join the iOS TestFlight beta" /></a>
@@ -29,21 +34,11 @@ consistent. The procedure is not complex, but it is difficult to do from memory:
 stops from one speed to a lower speed, with a set distance between the stops.
 
 <p align="center">
-  <img src="assets/ready.png" alt="Android: the start screen. It shows the procedure and a Start button." width="30%" />
-  <img src="assets/hold.png" alt="Android: the hold instruction. It shows the target speed and a countdown bar." width="30%" />
-  <img src="assets/brake.png" alt="Android: the brake instruction. It shows the speed at which you release the brakes." width="30%" />
+  <img src="assets/ios-ready.png" alt="The start screen. It shows the procedure and a Start button." width="30%" />
+  <img src="assets/ios-brake.png" alt="The brake instruction: a red screen with the speed to brake to and the live speed." width="30%" />
+  <img src="assets/ios-drive.png" alt="The drive instruction between stops: the distance that remains." width="30%" />
 </p>
-<p align="center">
-  <img src="assets/ios-ready.png" alt="iOS: the start screen, identical to the Android screen." width="30%" />
-  <img src="assets/ios-brake.png" alt="iOS: the brake instruction, with the live speed from Core Location." width="30%" />
-  <img src="assets/ios-dynamic-island.png" alt="iOS: the run continues in the background. The Dynamic Island shows the phase." width="30%" />
-</p>
-<p align="center">
-  <img src="assets/cooldown.png" alt="The cooldown instruction. It shows the distance that remains." width="30%" />
-  <img src="assets/editor.png" alt="The procedure editor. It shows the list of stages." width="30%" />
-  <img src="assets/guide.png" alt="The guide in the app." width="30%" />
-</p>
-<p align="center"><sub>Row 1: Android. Row 2: iOS, with the Live Activity in the Dynamic Island. Row 3: the shared screens.</sub></p>
+<p align="center"><sub>The Android app and the iOS app come from one codebase and show the same screens.</sub></p>
 
 ## Functions
 
@@ -63,27 +58,14 @@ stops from one speed to a lower speed, with a set distance between the stops.
 
 ## Installation
 
-### Android
+| Platform | How |
+|---|---|
+| **Android** (8.0 or newer) | Download the APK from the [latest release](https://github.com/nicglazkov/brake-bedding/releases/latest) and open it. Give your browser permission to install unknown apps if the device asks. |
+| **iOS** (17 or newer) | Join through [TestFlight](https://testflight.apple.com/join/KDtbBckw): install the TestFlight app, open the link on the device, and accept. |
 
-1. Download `brake-bedding-<version>.apk` from the
-   [latest release](https://github.com/nicglazkov/brake-bedding/releases/latest).
-2. If the device asks for it, give your browser or file manager permission to install
-   unknown apps.
-3. Open the file to install the app.
-4. Give the app access to your accurate location when it asks. This is the speed source.
-   The app does not use other permissions to operate.
-
-### iOS
-
-The iOS app comes through TestFlight:
-**https://testflight.apple.com/join/KDtbBckw**
-
-1. Install the TestFlight app from the App Store.
-2. Open the link above on the device and accept the invitation.
-3. Give the app access to your accurate location when it asks.
-
-On iOS, the run instruction also shows as a Live Activity on the Lock Screen and in
-the Dynamic Island, with Pause and Stop buttons.
+Give the app access to your **accurate** location when it asks. This is the speed
+source, and the only permission the app must have to operate. More help is on the
+[support page](https://nicglazkov.github.io/brake-bedding/support.html).
 
 ## Safety
 
