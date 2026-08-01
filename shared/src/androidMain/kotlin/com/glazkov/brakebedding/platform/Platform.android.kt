@@ -34,3 +34,15 @@ actual fun appVersionName(): String {
         "?"
     }
 }
+
+actual fun openWebPage(url: String) {
+    try {
+        val intent = android.content.Intent(
+            android.content.Intent.ACTION_VIEW,
+            android.net.Uri.parse(url),
+        ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+        PlatformContext.appContext.startActivity(intent)
+    } catch (e: Exception) {
+        android.util.Log.w("Platform", "No browser is available for $url")
+    }
+}

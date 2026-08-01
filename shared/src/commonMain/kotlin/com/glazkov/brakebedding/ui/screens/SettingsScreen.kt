@@ -1,5 +1,6 @@
 package com.glazkov.brakebedding.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,9 +28,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import com.glazkov.brakebedding.data.AppSettings
 import com.glazkov.brakebedding.data.UnitSystem
+import com.glazkov.brakebedding.platform.Links
+import com.glazkov.brakebedding.platform.openWebPage
 import com.glazkov.brakebedding.ui.theme.instrumentLabel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,6 +124,10 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Spacer(Modifier.height(12.dp))
+            LinkRow("Privacy policy") { openWebPage(Links.PRIVACY) }
+            LinkRow("Support") { openWebPage(Links.SUPPORT) }
+            LinkRow("Source code") { openWebPage(Links.SOURCE) }
             Spacer(Modifier.height(32.dp))
         }
     }
@@ -133,6 +141,26 @@ private fun SectionLabel(text: String) {
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier.padding(bottom = 12.dp),
     )
+}
+
+@Composable
+private fun LinkRow(title: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(title, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.primary)
+        Icon(
+            Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = null,
+            modifier = Modifier.rotate(180f),
+            tint = MaterialTheme.colorScheme.primary,
+        )
+    }
 }
 
 @Composable
