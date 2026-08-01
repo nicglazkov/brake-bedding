@@ -32,12 +32,11 @@ export default function Support() {
 
       <div className="mt-6 rounded-2xl border border-line bg-surface p-5">
         <p>
-          <strong>Two ways to get help:</strong> open an issue on{" "}
+          <strong>To get help:</strong> open an issue on{" "}
           <a className="text-ember" href="https://github.com/nicglazkov/brake-bedding/issues">
             GitHub
-          </a>{" "}
-          for the fastest response, or send an email to{" "}
-          <a className="text-ember" href="mailto:nic@glazkov.com">nic@glazkov.com</a>.
+          </a>
+          . On iOS, you can also send feedback directly from TestFlight.
         </p>
       </div>
 

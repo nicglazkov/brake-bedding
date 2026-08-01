@@ -67,9 +67,7 @@ export default function Privacy() {
 
       <h2 className="mt-8 text-xl font-bold">Contact</h2>
       <p className="mt-2 text-muted-fg">
-        Questions about this policy:{" "}
-        <a className="text-ember" href="mailto:nic@glazkov.com">nic@glazkov.com</a>, or open an
-        issue on{" "}
+        Questions about this policy: open an issue on{" "}
         <a className="text-ember" href="https://github.com/nicglazkov/brake-bedding/issues">
           GitHub
         </a>
