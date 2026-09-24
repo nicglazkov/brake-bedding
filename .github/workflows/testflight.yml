@@ -17,7 +17,7 @@ jobs:
   refresh:
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install the API key
         env:
@@ -47,14 +47,14 @@ jobs:
 
       - name: Set up JDK 17
         if: env.SKIP != 'true'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Set up Gradle
         if: env.SKIP != 'true'
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Select the newest Xcode 26
         if: env.SKIP != 'true'
