@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import localFont from "next/font/local";
 import "./globals.css";
+import { themeScript } from "./theme-script";
 import icon from "@/public/icon.png";
 
 // Manrope, self-hosted (latin subset, variable 400-800, SIL OFL 1.1).
@@ -20,9 +21,10 @@ export const metadata: Metadata = {
   icons: { icon: "/brake-bedding/favicon.png" },
 };
 
+// theme-color is set by the theme script, so it follows the visitor's choice.
 export const viewport: Viewport = {
-  themeColor: "#0a0d16",
-  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
 };
 
 const GITHUB = "https://github.com/nicglazkov/brake-bedding";
@@ -38,9 +40,28 @@ const more = [
   { name: "Chalkboard", href: "https://chalkboard.studio", text: "Turn a topic into a narrated explainer video" },
 ];
 
+// The sun/moon switch. The click is handled by the inline theme script, so the
+// markup is identical on the server and the client.
+function ThemeButton() {
+  return (
+    <button className="nd-theme" type="button" aria-label="Switch between light and dark theme" title="Light or dark theme">
+      <svg className="nd-theme__moon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" />
+      </svg>
+      <svg className="nd-theme__sun" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" />
+      </svg>
+    </button>
+  );
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={manrope.variable}>
+    <html lang="en" className={manrope.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         <header className="nd-nav">
           <div className="nd-wrap nd-nav__in">
@@ -52,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/support" className="nd-hide">Support</Link>
               <Link href="/privacy" className="nd-hide">Privacy</Link>
               <a href={GITHUB} className="nd-hide">GitHub</a>
+              <ThemeButton />
               <Link href="/#get" className="nd-btn nd-btn--sm">Get the app</Link>
             </nav>
           </div>

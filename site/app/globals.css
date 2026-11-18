@@ -5,26 +5,51 @@
    "More from Nic" strip). Shared by SABRE Plus, ChainCheck and Brake Bedding.
    Keep the skeleton block identical across sites; put page styles after it.
 
+   Two themes from one set of tokens:
+   - Day Drive (light) is the default for every visitor.
+   - Night Drive (dark) applies when <html data-theme="dark">. The inline
+     script in <head> sets it from the saved choice before first paint, and
+     the sun/moon button (.nd-theme) flips it and saves it.
+
    Manrope is self-hosted (latin subset, variable 400-800), SIL Open Font
    License 1.1, so the page makes no third-party font requests.
    ========================================================================== */
 /* Manrope is loaded with next/font/local in app/layout.tsx (variable --font-manrope). */
 
 :root {
-  color-scheme: dark;
-  /* Night Drive */
-  --nd-bg: #0a0d16;          /* blue-black road at night */
-  --nd-bg-2: #0f1320;        /* raised panel */
-  --nd-bg-3: #151a2a;        /* panel hover / inset */
-  --nd-line: rgba(255, 255, 255, 0.08);
-  --nd-line-2: rgba(255, 255, 255, 0.14);
-  --nd-fg: #eef1f7;
-  --nd-mut: #aab3c5;
-  --nd-dim: #7f899c;
-  --nd-amber: #ffb35c;       /* headlight */
-  --nd-amber-ink: #1a1206;
-  --nd-amber-soft: rgba(255, 179, 92, 0.12);
-  --nd-blue: #3a5cff;        /* the cool sky glow, decorative only */
+  color-scheme: light;
+  /* Day Drive: sunlit concrete, navy ink, burnt amber */
+  --nd-bg: #f4f3ef;          /* sunlit concrete */
+  --nd-bg-2: #fbfaf8;        /* raised panel */
+  --nd-bg-3: #ebe9e3;        /* panel hover / inset */
+  --nd-line: rgba(14, 26, 51, 0.1);
+  --nd-line-2: rgba(14, 26, 51, 0.18);
+  --nd-fg: #0e1a33;          /* deep navy ink */
+  --nd-mut: #3f4a63;
+  --nd-dim: #5a6378;
+  --nd-amber: #a35200;       /* amber, darkened to pass AA as text and as a button */
+  --nd-amber-rgb: 163 82 0;
+  --nd-amber-ink: #ffffff;   /* text on an amber button */
+  --nd-amber-soft: rgba(163, 82, 0, 0.08);
+  --nd-ok: #0f6e44;
+  --nd-blue: #3a5cff;        /* decorative only */
+
+  /* Surfaces that change character between day and night */
+  --nd-nav-bg: rgba(244, 243, 239, 0.82);
+  --nd-ghost: rgba(255, 255, 255, 0.7);
+  --nd-ghost-hover: #ffffff;
+  --nd-ghost-line-hover: rgba(14, 26, 51, 0.3);
+  --nd-tile: rgba(255, 255, 255, 0.55);
+  --nd-btn-shadow: 0 10px 24px -14px rgba(163, 82, 0, 0.6);
+  --nd-btn-shadow-hover: 0 14px 30px -12px rgba(163, 82, 0, 0.6);
+  --nd-frame: #ffffff;       /* the bezel ring around app screenshots */
+  --nd-drop: 0 30px 60px -32px rgba(14, 26, 51, 0.35);
+  --nd-glow:                 /* low sun over the road, cool sky opposite */
+    radial-gradient(60% 70% at 92% -10%, rgba(255, 196, 110, 0.45), transparent 62%),
+    radial-gradient(45% 50% at 4% 0%, rgba(120, 156, 230, 0.16), transparent 65%);
+  --nd-streak: rgba(163, 82, 0, 0.07);
+  --nd-foot-bg:
+    radial-gradient(60% 120% at 100% 0%, rgba(255, 196, 110, 0.22), transparent 60%), #ebe9e3;
 
   /* Skeleton: type scale */
   --nd-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -44,6 +69,40 @@
   --nd-gap: clamp(4.5rem, 10vw, 8rem);
   --nd-radius: 12px;
   --nd-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  /* Night Drive */
+  --nd-bg: #0a0d16;          /* blue-black road at night */
+  --nd-bg-2: #0f1320;
+  --nd-bg-3: #151a2a;
+  --nd-line: rgba(255, 255, 255, 0.08);
+  --nd-line-2: rgba(255, 255, 255, 0.14);
+  --nd-fg: #eef1f7;
+  --nd-mut: #aab3c5;
+  --nd-dim: #7f899c;
+  --nd-amber: #ffb35c;       /* headlight */
+  --nd-amber-rgb: 255 179 92;
+  --nd-amber-ink: #1a1206;
+  --nd-amber-soft: rgba(255, 179, 92, 0.12);
+  --nd-ok: #7fd1a8;
+
+  --nd-nav-bg: rgba(10, 13, 22, 0.78);
+  --nd-ghost: rgba(255, 255, 255, 0.06);
+  --nd-ghost-hover: rgba(255, 255, 255, 0.1);
+  --nd-ghost-line-hover: rgba(255, 255, 255, 0.28);
+  --nd-tile: rgba(255, 255, 255, 0.02);
+  --nd-btn-shadow: 0 12px 32px -14px rgba(255, 179, 92, 0.65);
+  --nd-btn-shadow-hover: 0 16px 40px -12px rgba(255, 179, 92, 0.8);
+  --nd-frame: #0d1018;
+  --nd-drop: 0 40px 70px -30px rgba(0, 0, 0, 0.9);
+  --nd-glow:                 /* headlights low on the right, cool sky top left */
+    radial-gradient(70% 60% at 88% 105%, rgba(255, 154, 60, 0.30), transparent 60%),
+    radial-gradient(50% 45% at 8% -5%, rgba(58, 92, 255, 0.16), transparent 65%);
+  --nd-streak: rgba(255, 179, 92, 0.13);
+  --nd-foot-bg:
+    radial-gradient(60% 120% at 100% 100%, rgba(255, 154, 60, 0.08), transparent 60%), #080a12;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -70,6 +129,9 @@ a { color: inherit; }
 
 .nd-wrap { width: min(100% - 2 * var(--nd-gutter), var(--nd-max)); margin-inline: auto; }
 
+/* Theme-specific images: <img class="nd-day"> and <img class="nd-night"> */
+:root[data-theme="dark"] .nd-day, :root:not([data-theme="dark"]) .nd-night { display: none !important; }
+
 h1, h2, h3 { margin: 0; color: var(--nd-fg); text-wrap: balance; }
 h1 { font-size: var(--nd-t-h1); line-height: 1.02; font-weight: 800; letter-spacing: -0.035em; }
 h2 { font-size: var(--nd-t-h2); line-height: 1.08; font-weight: 800; letter-spacing: -0.03em; }
@@ -95,15 +157,15 @@ p { margin: 0; }
   background: var(--nd-amber); color: var(--nd-amber-ink);
   font: 700 0.9375rem/1 var(--nd-sans); letter-spacing: -0.005em;
   text-decoration: none; white-space: nowrap;
-  box-shadow: 0 12px 32px -14px rgba(255, 179, 92, 0.65);
+  box-shadow: var(--nd-btn-shadow);
   transition: transform 0.25s var(--nd-ease), box-shadow 0.25s var(--nd-ease), background 0.2s, border-color 0.2s;
 }
-.nd-btn:hover { transform: translateY(-1px); box-shadow: 0 16px 40px -12px rgba(255, 179, 92, 0.8); }
+.nd-btn:hover { transform: translateY(-1px); box-shadow: var(--nd-btn-shadow-hover); }
 .nd-btn--ghost {
-  background: rgba(255, 255, 255, 0.06); color: var(--nd-fg);
+  background: var(--nd-ghost); color: var(--nd-fg);
   border-color: var(--nd-line-2); box-shadow: none;
 }
-.nd-btn--ghost:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.28); box-shadow: none; }
+.nd-btn--ghost:hover { background: var(--nd-ghost-hover); border-color: var(--nd-ghost-line-hover); box-shadow: none; }
 .nd-btn--sm { min-height: 36px; padding: 0 0.9rem; font-size: 0.875rem; border-radius: 8px; box-shadow: none; }
 .nd-btn svg { width: 18px; height: 18px; flex: none; }
 .nd-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
@@ -113,7 +175,7 @@ p { margin: 0; }
 .nd-nav {
   position: sticky; top: 0; z-index: 50;
   height: var(--nd-nav-h);
-  background: rgba(10, 13, 22, 0.78);
+  background: var(--nd-nav-bg);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
   backdrop-filter: saturate(140%) blur(14px);
   border-bottom: 1px solid var(--nd-line);
@@ -131,26 +193,43 @@ p { margin: 0; }
   text-decoration: none; transition: color 0.2s;
 }
 .nd-links a:not(.nd-btn):hover, .nd-links a[aria-current="page"] { color: var(--nd-fg); }
-@media (max-width: 40rem) { .nd-links .nd-hide { display: none; } .nd-links { gap: 1rem; } }
+@media (max-width: 40rem) { .nd-links .nd-hide { display: none; } .nd-links { gap: 0.75rem; } }
+
+/* Sun/moon theme switch. Shows the moon by day (tap for night) and the sun
+   by night (tap for day). The label is fixed text, so markup never changes. */
+.nd-theme {
+  position: relative; display: inline-grid; place-items: center; flex: none;
+  width: 36px; height: 36px; padding: 0; margin: 0;
+  border: 1px solid var(--nd-line-2); border-radius: 8px;
+  background: var(--nd-ghost); color: var(--nd-mut); cursor: pointer;
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+.nd-theme:hover { color: var(--nd-fg); background: var(--nd-ghost-hover); border-color: var(--nd-ghost-line-hover); }
+.nd-theme svg {
+  grid-area: 1 / 1; width: 18px; height: 18px;
+  fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  transition: opacity 0.3s var(--nd-ease), transform 0.45s var(--nd-ease);
+}
+.nd-theme .nd-theme__sun { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+:root[data-theme="dark"] .nd-theme .nd-theme__sun { opacity: 1; transform: none; }
+:root[data-theme="dark"] .nd-theme .nd-theme__moon { opacity: 0; transform: rotate(90deg) scale(0.6); }
 
 /* ---- Section rhythm ----------------------------------------------------- */
 .nd-section { padding-block: var(--nd-gap); border-top: 1px solid var(--nd-line); }
 .nd-section__head { max-width: 40rem; margin-bottom: clamp(2rem, 5vw, 3.25rem); }
 .nd-section__head > p:not(.nd-eyebrow) { color: var(--nd-mut); margin-top: 1rem; max-width: 60ch; }
 
-/* The headlight glow and lane streak behind every hero. */
+/* Behind every hero: a low sun by day, headlights by night, and lane streaks. */
 .nd-hero { position: relative; isolation: isolate; overflow: hidden; }
 .nd-hero::before {
   content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
-  background:
-    radial-gradient(70% 60% at 88% 105%, rgba(255, 154, 60, 0.30), transparent 60%),
-    radial-gradient(50% 45% at 8% -5%, rgba(58, 92, 255, 0.16), transparent 65%);
+  background: var(--nd-glow);
   -webkit-mask: linear-gradient(#000 55%, transparent);
   mask: linear-gradient(#000 55%, transparent);
 }
 .nd-streak {
   position: absolute; left: 0; right: 0; bottom: 0; height: 120px; z-index: -1; pointer-events: none;
-  background: repeating-linear-gradient(100deg, transparent 0 46px, rgba(255, 179, 92, 0.13) 46px 48px);
+  background: repeating-linear-gradient(100deg, transparent 0 46px, var(--nd-streak) 46px 48px);
   -webkit-mask: linear-gradient(transparent, #000 55%, transparent);
   mask: linear-gradient(transparent, #000 55%, transparent);
 }
@@ -160,7 +239,7 @@ p { margin: 0; }
   position: relative; overflow: hidden;
   border-top: 1px solid var(--nd-line);
   padding: 3.5rem 0 2.5rem;
-  background: radial-gradient(60% 120% at 100% 100%, rgba(255, 154, 60, 0.08), transparent 60%), #080a12;
+  background: var(--nd-foot-bg);
   font-size: var(--nd-t-small); color: var(--nd-mut);
 }
 .nd-foot__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem 2rem; }
@@ -180,7 +259,7 @@ p { margin: 0; }
 }
 .nd-more a.nd-more__item {
   display: block; height: 100%; padding: 0.85rem 1rem; text-decoration: none;
-  background: rgba(255, 255, 255, 0.02); border: 1px solid var(--nd-line); border-radius: 10px;
+  background: var(--nd-tile); border: 1px solid var(--nd-line); border-radius: 10px;
   transition: background 0.2s, border-color 0.2s;
 }
 .nd-more a.nd-more__item:hover { background: var(--nd-bg-3); border-color: var(--nd-line-2); }
@@ -210,7 +289,17 @@ p { margin: 0; }
   --phase-brake: #d92d20;
   --phase-drive: #2c3742;
   --phase-cool: #115e59;
+  --needle: #d92d20;
+  /* The gauge reads like a daytime dial: a pale face with navy ticks. */
+  --g-face: #fbfaf8;
+  --g-bezel: #d6d2c8;
+  --g-needle-glow: rgba(217, 45, 32, 0.35);
+}
+:root[data-theme="dark"] {
   --needle: #ff4436;
+  --g-face: #0b0e17;
+  --g-bezel: #1c2130;
+  --g-needle-glow: rgba(255, 68, 54, 0.7);
 }
 
 /* Hero */
@@ -229,15 +318,15 @@ p { margin: 0; }
   background: radial-gradient(closest-side, rgba(255, 68, 54, 0.14), transparent);
 }
 .gauge svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.gauge .face { fill: #0b0e17; stroke: var(--nd-line-2); }
-.gauge .bezel { fill: none; stroke: #1c2130; stroke-width: 6; }
+.gauge .face { fill: var(--g-face); stroke: var(--nd-line-2); }
+.gauge .bezel { fill: none; stroke: var(--g-bezel); stroke-width: 6; }
 .gauge .tick { stroke: var(--nd-dim); stroke-width: 2; stroke-linecap: round; }
 .gauge .tick--major { stroke: var(--nd-fg); stroke-width: 3; }
 .gauge .num { fill: var(--nd-mut); font: 600 15px var(--nd-sans); text-anchor: middle; dominant-baseline: middle; }
 .gauge .redzone { fill: none; stroke: var(--needle); stroke-width: 6; opacity: 0.85; }
 .gauge .needle { transform-origin: 200px 200px; transform: rotate(-60deg); }
-.gauge .needle line { stroke: var(--needle); stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255, 68, 54, 0.7)); }
-.gauge .hub { fill: #0b0e17; stroke: var(--needle); stroke-width: 3; }
+.gauge .needle line { stroke: var(--needle); stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 0 6px var(--g-needle-glow)); }
+.gauge .hub { fill: var(--g-face); stroke: var(--needle); stroke-width: 3; }
 .gauge .unit { fill: var(--nd-dim); font: 600 12px var(--nd-mono); letter-spacing: 0.14em; text-anchor: middle; }
 .gauge .phase {
   position: absolute; left: 50%; bottom: 16%; transform: translateX(-50%);
@@ -284,7 +373,7 @@ p { margin: 0; }
 .phases p { color: var(--nd-mut); font-size: 0.9375rem; }
 @media (max-width: 34rem) { .phases li { grid-template-columns: 1fr; gap: 0.5rem; } .phases .chip { justify-self: start; } }
 .shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.85rem; }
-.shots img { border-radius: 18px; border: 1px solid var(--nd-line-2); box-shadow: 0 0 0 5px #0d1018, 0 30px 60px -28px rgba(0, 0, 0, 0.95); }
+.shots img { border-radius: 18px; border: 1px solid var(--nd-line-2); box-shadow: 0 0 0 5px var(--nd-frame), 0 0 0 6px var(--nd-line), var(--nd-drop); }
 .shots img:nth-child(2) { transform: translateY(1.5rem); }
 
 /* Features: numbered two-column list */
@@ -297,8 +386,8 @@ p { margin: 0; }
 
 /* Safety notice */
 .callout {
-  position: relative; border: 1px solid rgba(255, 179, 92, 0.4); border-radius: var(--nd-radius);
-  background: linear-gradient(100deg, rgba(255, 179, 92, 0.12), rgba(255, 179, 92, 0.03) 70%);
+  position: relative; border: 1px solid rgb(var(--nd-amber-rgb) / 0.4); border-radius: var(--nd-radius);
+  background: linear-gradient(100deg, rgb(var(--nd-amber-rgb) / 0.12), rgb(var(--nd-amber-rgb) / 0.03) 70%);
   padding: 1.35rem 1.5rem 1.35rem 3.6rem; color: var(--nd-mut); line-height: 1.6;
 }
 .callout::before {
@@ -345,3 +434,6 @@ p { margin: 0; }
 .doc .callout { padding-left: 1.5rem; }
 .doc .callout::before { display: none; }
 .doc .callout strong { color: var(--nd-fg); }
+
+/* Day Drive: a soft drop under the dial so the pale face sits on the page. */
+:root:not([data-theme="dark"]) .gauge svg { filter: drop-shadow(0 24px 40px rgba(14, 26, 51, 0.14)); }

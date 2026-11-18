@@ -1,9 +1,13 @@
 name: Deploy the site
 
-# Builds the landing site and deploys it to GitHub Pages.
+# Builds the landing site and deploys it to GitHub Pages. On a pull request
+# that touches the site it only builds and lints, so a broken site shows up
+# as a failed check before merge; nothing is deployed.
 on:
   push:
     branches: [master]
+    paths: ["site/**", ".github/workflows/site.yml"]
+  pull_request:
     paths: ["site/**", ".github/workflows/site.yml"]
   workflow_dispatch:
 
@@ -13,7 +17,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: ${{ github.event_name == 'pull_request' && format('site-pr-{0}', github.ref) || 'pages' }}
   cancel-in-progress: true
 
 jobs:
@@ -30,13 +34,16 @@ jobs:
         run: |
           cd site
           npm ci
+          npm run lint
           npm run build
-      - uses: actions/upload-pages-artifact@v5
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
         with:
           path: site/out
           include-hidden-files: true
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-24.04
     environment:
