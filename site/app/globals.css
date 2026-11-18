@@ -1,71 +1,347 @@
 @import "tailwindcss";
 
-/* The design system of the app, as Tailwind tokens: warm stone surfaces, one ember
-   accent, and monospace labels in capitals. The site adapts to the app, not the
-   app to the site. */
-:root {
-  --background: #fbf8f6;
-  --foreground: #1c1917;
-  --muted-fg: #55483f;
-  --surface: #f3ede9;
-  --line: #d8ccc4;
-  --ember: #c2410c;
-  --ember-deep: #7a2e0b;
-  --ember-soft: #ffe1d2;
+/* ==========================================================================
+   Night Drive skin + shared site skeleton (nav, type scale, footer with the
+   "More from Nic" strip). Shared by SABRE Plus, ChainCheck and Brake Bedding.
+   Keep the skeleton block identical across sites; put page styles after it.
 
+   Manrope is self-hosted (latin subset, variable 400-800), SIL Open Font
+   License 1.1, so the page makes no third-party font requests.
+   ========================================================================== */
+/* Manrope is loaded with next/font/local in app/layout.tsx (variable --font-manrope). */
+
+:root {
+  color-scheme: dark;
+  /* Night Drive */
+  --nd-bg: #0a0d16;          /* blue-black road at night */
+  --nd-bg-2: #0f1320;        /* raised panel */
+  --nd-bg-3: #151a2a;        /* panel hover / inset */
+  --nd-line: rgba(255, 255, 255, 0.08);
+  --nd-line-2: rgba(255, 255, 255, 0.14);
+  --nd-fg: #eef1f7;
+  --nd-mut: #aab3c5;
+  --nd-dim: #7f899c;
+  --nd-amber: #ffb35c;       /* headlight */
+  --nd-amber-ink: #1a1206;
+  --nd-amber-soft: rgba(255, 179, 92, 0.12);
+  --nd-blue: #3a5cff;        /* the cool sky glow, decorative only */
+
+  /* Skeleton: type scale */
+  --nd-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --nd-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, "Cascadia Mono", Consolas, monospace;
+  --nd-t-h1: clamp(2.4rem, 1.25rem + 4.4vw, 4.4rem);
+  --nd-t-h2: clamp(1.7rem, 1.2rem + 1.9vw, 2.6rem);
+  --nd-t-h3: 1.125rem;
+  --nd-t-lede: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  --nd-t-body: 1.0625rem;
+  --nd-t-small: 0.875rem;
+  --nd-t-label: 0.75rem;
+
+  /* Skeleton: layout */
+  --nd-max: 72rem;           /* 1152px */
+  --nd-gutter: clamp(1rem, 4vw, 2rem);
+  --nd-nav-h: 64px;
+  --nd-gap: clamp(4.5rem, 10vw, 8rem);
+  --nd-radius: 12px;
+  --nd-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--nd-nav-h) + 16px); }
+body {
+  margin: 0;
+  background: var(--nd-bg);
+  color: var(--nd-fg);
+  font-family: var(--nd-sans);
+  font-size: var(--nd-t-body);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; }
+:where(a, button, summary):focus-visible {
+  outline: 2px solid var(--nd-amber);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+::selection { background: var(--nd-amber); color: var(--nd-amber-ink); }
+
+.nd-wrap { width: min(100% - 2 * var(--nd-gutter), var(--nd-max)); margin-inline: auto; }
+
+h1, h2, h3 { margin: 0; color: var(--nd-fg); text-wrap: balance; }
+h1 { font-size: var(--nd-t-h1); line-height: 1.02; font-weight: 800; letter-spacing: -0.035em; }
+h2 { font-size: var(--nd-t-h2); line-height: 1.08; font-weight: 800; letter-spacing: -0.03em; }
+h3 { font-size: var(--nd-t-h3); line-height: 1.3; font-weight: 700; letter-spacing: -0.01em; }
+h1 em, h2 em { font-style: normal; color: var(--nd-amber); }
+p { margin: 0; }
+
+.nd-eyebrow {
+  font-family: var(--nd-mono);
+  font-size: var(--nd-t-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nd-amber);
+  margin: 0 0 0.9rem;
+}
+.nd-lede { font-size: var(--nd-t-lede); color: var(--nd-mut); max-width: 46ch; }
+
+/* ---- Buttons ------------------------------------------------------------ */
+.nd-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 48px; padding: 0 1.25rem;
+  border-radius: 10px; border: 1px solid transparent;
+  background: var(--nd-amber); color: var(--nd-amber-ink);
+  font: 700 0.9375rem/1 var(--nd-sans); letter-spacing: -0.005em;
+  text-decoration: none; white-space: nowrap;
+  box-shadow: 0 12px 32px -14px rgba(255, 179, 92, 0.65);
+  transition: transform 0.25s var(--nd-ease), box-shadow 0.25s var(--nd-ease), background 0.2s, border-color 0.2s;
+}
+.nd-btn:hover { transform: translateY(-1px); box-shadow: 0 16px 40px -12px rgba(255, 179, 92, 0.8); }
+.nd-btn--ghost {
+  background: rgba(255, 255, 255, 0.06); color: var(--nd-fg);
+  border-color: var(--nd-line-2); box-shadow: none;
+}
+.nd-btn--ghost:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.28); box-shadow: none; }
+.nd-btn--sm { min-height: 36px; padding: 0 0.9rem; font-size: 0.875rem; border-radius: 8px; box-shadow: none; }
+.nd-btn svg { width: 18px; height: 18px; flex: none; }
+.nd-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+@media (max-width: 30rem) { .nd-actions .nd-btn:not(.nd-btn--sm) { flex: 1 1 100%; white-space: normal; text-align: center; } }
+
+/* ---- Nav (skeleton) ----------------------------------------------------- */
+.nd-nav {
+  position: sticky; top: 0; z-index: 50;
+  height: var(--nd-nav-h);
+  background: rgba(10, 13, 22, 0.78);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  backdrop-filter: saturate(140%) blur(14px);
+  border-bottom: 1px solid var(--nd-line);
+}
+.nd-nav__in { height: 100%; display: flex; align-items: center; gap: 1rem; }
+.nd-brand {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-weight: 800; font-size: 1rem; letter-spacing: -0.02em;
+  text-decoration: none; color: var(--nd-fg); white-space: nowrap;
+}
+.nd-brand img, .nd-brand svg { width: 28px; height: 28px; border-radius: 7px; }
+.nd-links { margin-left: auto; display: flex; align-items: center; gap: 1.5rem; }
+.nd-links a:not(.nd-btn) {
+  font-size: var(--nd-t-small); font-weight: 600; color: var(--nd-mut);
+  text-decoration: none; transition: color 0.2s;
+}
+.nd-links a:not(.nd-btn):hover, .nd-links a[aria-current="page"] { color: var(--nd-fg); }
+@media (max-width: 40rem) { .nd-links .nd-hide { display: none; } .nd-links { gap: 1rem; } }
+
+/* ---- Section rhythm ----------------------------------------------------- */
+.nd-section { padding-block: var(--nd-gap); border-top: 1px solid var(--nd-line); }
+.nd-section__head { max-width: 40rem; margin-bottom: clamp(2rem, 5vw, 3.25rem); }
+.nd-section__head > p:not(.nd-eyebrow) { color: var(--nd-mut); margin-top: 1rem; max-width: 60ch; }
+
+/* The headlight glow and lane streak behind every hero. */
+.nd-hero { position: relative; isolation: isolate; overflow: hidden; }
+.nd-hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(70% 60% at 88% 105%, rgba(255, 154, 60, 0.30), transparent 60%),
+    radial-gradient(50% 45% at 8% -5%, rgba(58, 92, 255, 0.16), transparent 65%);
+  -webkit-mask: linear-gradient(#000 55%, transparent);
+  mask: linear-gradient(#000 55%, transparent);
+}
+.nd-streak {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 120px; z-index: -1; pointer-events: none;
+  background: repeating-linear-gradient(100deg, transparent 0 46px, rgba(255, 179, 92, 0.13) 46px 48px);
+  -webkit-mask: linear-gradient(transparent, #000 55%, transparent);
+  mask: linear-gradient(transparent, #000 55%, transparent);
+}
+
+/* ---- Footer (skeleton) -------------------------------------------------- */
+.nd-foot {
+  position: relative; overflow: hidden;
+  border-top: 1px solid var(--nd-line);
+  padding: 3.5rem 0 2.5rem;
+  background: radial-gradient(60% 120% at 100% 100%, rgba(255, 154, 60, 0.08), transparent 60%), #080a12;
+  font-size: var(--nd-t-small); color: var(--nd-mut);
+}
+.nd-foot__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem 2rem; }
+.nd-foot__links { display: flex; flex-wrap: wrap; gap: 0.6rem 1.5rem; }
+.nd-foot__links a { color: var(--nd-mut); text-decoration: none; font-weight: 500; }
+.nd-foot__links a:hover { color: var(--nd-fg); text-decoration: underline; text-underline-offset: 3px; }
+.nd-foot__note { margin-top: 1.5rem; max-width: 72ch; color: var(--nd-dim); line-height: 1.6; }
+
+.nd-more { margin-top: 2.5rem; padding-top: 1.75rem; border-top: 1px solid var(--nd-line); }
+.nd-more__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 1rem; }
+.nd-more__head .nd-eyebrow { margin: 0; color: var(--nd-dim); }
+.nd-more__all { color: var(--nd-mut); font-weight: 600; text-decoration: none; white-space: nowrap; }
+.nd-more__all:hover { color: var(--nd-amber); }
+.nd-more ul {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(10rem, 100%), 1fr)); gap: 0.5rem;
+}
+.nd-more a.nd-more__item {
+  display: block; height: 100%; padding: 0.85rem 1rem; text-decoration: none;
+  background: rgba(255, 255, 255, 0.02); border: 1px solid var(--nd-line); border-radius: 10px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.nd-more a.nd-more__item:hover { background: var(--nd-bg-3); border-color: var(--nd-line-2); }
+.nd-more__item b { display: block; color: var(--nd-fg); font-weight: 700; font-size: 0.9375rem; }
+.nd-more__item span { display: block; color: var(--nd-dim); font-size: 0.8125rem; line-height: 1.45; margin-top: 0.15rem; }
+.nd-more a.nd-more__item[aria-current="page"] b::after {
+  content: "You are here"; margin-left: 0.5rem; font: 500 0.6875rem var(--nd-mono);
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--nd-amber);
+}
+@media (min-width: 64rem) { .nd-more ul { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.nd-foot__base { margin-top: 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1.5rem; color: var(--nd-dim); font-size: 0.8125rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+/* ==== end of shared skeleton ============================================ */
+
+/* ==========================================================================
+   Brake Bedding page styles.
+   The phase colors are the app's own, so the site matches what the driver
+   sees during a run. The one gauge on the page uses the app's brake red.
+   ========================================================================== */
+:root {
   --phase-up: #0b8a52;
   --phase-down: #e8a317;
   --phase-hold: #1668c4;
   --phase-brake: #d92d20;
   --phase-drive: #2c3742;
   --phase-cool: #115e59;
+  --needle: #ff4436;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #16120f;
-    --foreground: #ede0d9;
-    --muted-fg: #d7c3b8;
-    --surface: #231d19;
-    --line: #52443c;
-    --ember: #ea580c;
-    --ember-deep: #ffb98a;
-    --ember-soft: #3b2415;
+/* Hero */
+.hero { padding: clamp(3rem, 8vw, 6rem) 0 clamp(4rem, 9vw, 6.5rem); }
+.hero__grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: clamp(2.5rem, 6vw, 5rem); align-items: center; }
+.hero h1 { font-size: clamp(2.4rem, 1.2rem + 3.8vw, 4.1rem); text-wrap: pretty; }
+.hero .nd-lede { margin-top: 1.4rem; max-width: 50ch; }
+.hero .nd-actions { margin-top: 2rem; }
+.hero .meta { margin-top: 1.1rem; font-family: var(--nd-mono); font-size: 0.8125rem; color: var(--nd-dim); letter-spacing: 0.04em; }
+@media (max-width: 56rem) { .hero__grid { grid-template-columns: 1fr; } }
+
+/* The gauge: one red needle that makes one bedding stop */
+.gauge { position: relative; width: min(100%, 25rem); aspect-ratio: 1; margin-inline: auto; }
+.gauge::before {
+  content: ""; position: absolute; inset: 8%; border-radius: 50%; z-index: -1;
+  background: radial-gradient(closest-side, rgba(255, 68, 54, 0.14), transparent);
+}
+.gauge svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.gauge .face { fill: #0b0e17; stroke: var(--nd-line-2); }
+.gauge .bezel { fill: none; stroke: #1c2130; stroke-width: 6; }
+.gauge .tick { stroke: var(--nd-dim); stroke-width: 2; stroke-linecap: round; }
+.gauge .tick--major { stroke: var(--nd-fg); stroke-width: 3; }
+.gauge .num { fill: var(--nd-mut); font: 600 15px var(--nd-sans); text-anchor: middle; dominant-baseline: middle; }
+.gauge .redzone { fill: none; stroke: var(--needle); stroke-width: 6; opacity: 0.85; }
+.gauge .needle { transform-origin: 200px 200px; transform: rotate(-60deg); }
+.gauge .needle line { stroke: var(--needle); stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255, 68, 54, 0.7)); }
+.gauge .hub { fill: #0b0e17; stroke: var(--needle); stroke-width: 3; }
+.gauge .unit { fill: var(--nd-dim); font: 600 12px var(--nd-mono); letter-spacing: 0.14em; text-anchor: middle; }
+.gauge .phase {
+  position: absolute; left: 50%; bottom: 16%; transform: translateX(-50%);
+  display: grid; justify-items: center;
+}
+.gauge .phase span {
+  grid-area: 1 / 1; font-family: var(--nd-mono); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em;
+  color: #fff; padding: 0.45rem 0.8rem; border-radius: 6px; white-space: nowrap; opacity: 0;
+}
+.gauge .phase .p-up { background: var(--phase-up); }
+.gauge .phase .p-hold { background: var(--phase-hold); }
+.gauge .phase .p-brake { background: var(--phase-brake); opacity: 1; }
+.gauge .phase .p-drive { background: var(--phase-drive); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); }
+/* One bedding stop, on a loop: increase speed, hold, brake, drive the gap. */
+@media (prefers-reduced-motion: no-preference) {
+  .gauge .needle { animation: g-needle 7s cubic-bezier(0.45, 0, 0.3, 1) infinite; }
+  .gauge .phase .p-up { animation: g-up 7s steps(1) infinite; }
+  .gauge .phase .p-hold { animation: g-hold 7s steps(1) infinite; }
+  .gauge .phase .p-brake { opacity: 0; animation: g-brake 7s steps(1) infinite; }
+  .gauge .phase .p-drive { animation: g-drive 7s steps(1) infinite; }
+  @keyframes g-needle {
+    0% { transform: rotate(-101deg); }
+    30%, 45% { transform: rotate(0deg); }
+    62% { transform: rotate(-112deg); }
+    100% { transform: rotate(-101deg); }
   }
+  @keyframes g-up { 0% { opacity: 1; } 30% { opacity: 0; } }
+  @keyframes g-hold { 0% { opacity: 0; } 30% { opacity: 1; } 45% { opacity: 0; } }
+  @keyframes g-brake { 0% { opacity: 0; } 45% { opacity: 1; } 62% { opacity: 0; } }
+  @keyframes g-drive { 0% { opacity: 0; } 62% { opacity: 1; } 100% { opacity: 0; } }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted-fg: var(--muted-fg);
-  --color-surface: var(--surface);
-  --color-line: var(--line);
-  --color-ember: var(--ember);
-  --color-ember-deep: var(--ember-deep);
-  --color-ember-soft: var(--ember-soft);
-  --color-phase-up: var(--phase-up);
-  --color-phase-down: var(--phase-down);
-  --color-phase-hold: var(--phase-hold);
-  --color-phase-brake: var(--phase-brake);
-  --color-phase-drive: var(--phase-drive);
-  --color-phase-cool: var(--phase-cool);
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+/* Phases: the run as a sequence */
+.phases-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+@media (max-width: 56rem) { .phases-grid { grid-template-columns: 1fr; } }
+.phases { list-style: none; margin: 0; padding: 0; position: relative; }
+.phases li { display: grid; grid-template-columns: 11.5rem minmax(0, 1fr); gap: 1.25rem; align-items: center; padding: 0.9rem 0; border-top: 1px solid var(--nd-line); }
+.phases li:last-child { border-bottom: 1px solid var(--nd-line); }
+.phases .chip {
+  font-family: var(--nd-mono); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; color: #fff;
+  border-radius: 8px; padding: 0.7rem 0.85rem; text-align: left;
 }
+.phases .chip--drive { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); }
+.phases p { color: var(--nd-mut); font-size: 0.9375rem; }
+@media (max-width: 34rem) { .phases li { grid-template-columns: 1fr; gap: 0.5rem; } .phases .chip { justify-self: start; } }
+.shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.85rem; }
+.shots img { border-radius: 18px; border: 1px solid var(--nd-line-2); box-shadow: 0 0 0 5px #0d1018, 0 30px 60px -28px rgba(0, 0, 0, 0.95); }
+.shots img:nth-child(2) { transform: translateY(1.5rem); }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-}
+/* Features: numbered two-column list */
+.features { list-style: none; padding: 0; margin: 0; counter-reset: f; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(2rem, 5vw, 4rem); }
+.features li { counter-increment: f; position: relative; padding: 1.4rem 0 1.4rem 2.75rem; border-top: 1px solid var(--nd-line); }
+.features li::before { content: counter(f, decimal-leading-zero); position: absolute; left: 0; top: 1.62rem; font-family: var(--nd-mono); font-size: 0.8125rem; color: var(--nd-amber); }
+.features h3 { margin-bottom: 0.35rem; }
+.features p { color: var(--nd-mut); font-size: 0.9375rem; }
+@media (max-width: 44rem) { .features { grid-template-columns: 1fr; } }
 
-/* The gauge-cluster label style of the app. */
-.label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: var(--ember);
+/* Safety notice */
+.callout {
+  position: relative; border: 1px solid rgba(255, 179, 92, 0.4); border-radius: var(--nd-radius);
+  background: linear-gradient(100deg, rgba(255, 179, 92, 0.12), rgba(255, 179, 92, 0.03) 70%);
+  padding: 1.35rem 1.5rem 1.35rem 3.6rem; color: var(--nd-mut); line-height: 1.6;
 }
+.callout::before {
+  content: "!"; position: absolute; left: 1.25rem; top: 1.3rem; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  display: grid; place-items: center; background: var(--nd-amber); color: var(--nd-amber-ink); font-weight: 800; font-size: 0.95rem;
+}
+.callout strong { color: var(--nd-amber); font-weight: 700; }
+.callout a { color: var(--nd-amber); text-underline-offset: 3px; }
+.features + .callout { margin-top: clamp(2rem, 5vw, 3rem); }
+
+/* FAQ */
+.split { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+@media (max-width: 56rem) { .split { grid-template-columns: 1fr; } }
+.faq { border-top: 1px solid var(--nd-line); }
+.faq details { border-bottom: 1px solid var(--nd-line); }
+.faq summary { cursor: pointer; list-style: none; position: relative; padding: 1.25rem 2.5rem 1.25rem 0; font-weight: 700; font-size: 1.0625rem; letter-spacing: -0.01em; transition: color 0.2s; }
+.faq summary:hover { color: var(--nd-amber); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; position: absolute; right: 0.25rem; top: 50%; width: 10px; height: 10px; margin-top: -7px; border-right: 2px solid var(--nd-dim); border-bottom: 2px solid var(--nd-dim); transform: rotate(45deg); transition: transform 0.3s var(--nd-ease); }
+.faq details[open] summary::after { transform: rotate(-135deg); margin-top: -2px; border-color: var(--nd-amber); }
+.faq p { color: var(--nd-mut); font-size: 0.9375rem; max-width: 62ch; margin: 0 0 1.25rem; }
+
+/* Closer */
+.closer { padding: var(--nd-gap) 0; text-align: center; }
+.closer h2 { font-size: clamp(2rem, 1.2rem + 3.4vw, 3.4rem); }
+.closer .nd-actions { justify-content: center; margin-top: 2rem; }
+
+/* Long-form pages */
+.doc { padding: clamp(3rem, 7vw, 5rem) 0 var(--nd-gap); }
+.doc .nd-wrap { max-width: 46rem; }
+.doc h1 { font-size: clamp(2.1rem, 1.3rem + 3vw, 3.2rem); }
+.doc .effective { font-family: var(--nd-mono); font-size: 0.8125rem; color: var(--nd-dim); margin-top: 1rem; }
+.doc h2 { font-size: clamp(1.3rem, 1rem + 1.2vw, 1.65rem); margin: 2.75rem 0 0; padding-top: 1.6rem; border-top: 1px solid var(--nd-line); }
+.doc h3 { margin-top: 1.5rem; }
+.doc p, .doc ul { color: var(--nd-mut); margin-top: 0.75rem; }
+.doc ul { padding-left: 1.3rem; list-style: disc; }
+.doc li { margin-top: 0.4rem; }
+.doc li::marker { color: var(--nd-amber); }
+.doc strong { color: var(--nd-fg); font-weight: 700; }
+.doc a { color: var(--nd-amber); text-decoration: underline; text-underline-offset: 3px; }
+.doc .callout { margin-top: 1.75rem; }
+.doc .callout p { margin: 0; }
+.doc .nd-eyebrow { color: var(--nd-amber); margin: 0 0 0.9rem; }
+.doc .callout { padding-left: 1.5rem; }
+.doc .callout::before { display: none; }
+.doc .callout strong { color: var(--nd-fg); }
