@@ -1,0 +1,32 @@
+name: Site check
+
+# Lints and builds the landing site on pull requests that touch it, so a
+# broken site shows up as a failed check before merge. Nothing is deployed;
+# the Pages deploy stays in site.yml and runs only on master.
+on:
+  pull_request:
+    paths: ["site/**", ".github/workflows/site.yml", ".github/workflows/site-check.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Lint and build
+        run: |
+          cd site
+          npm ci
+          npm run lint
+          npm run build

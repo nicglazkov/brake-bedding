@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Support — Brake Bedding",
+  title: "Support: Brake Bedding",
   description: "Help and support for the Brake Bedding app.",
 };
 
@@ -20,55 +20,57 @@ const faq = [
   },
   {
     q: "Which procedure do I use for my pads?",
-    a: "Use the instructions from your pad manufacturer if you have them — they have priority. The presets in the app are usual community procedures, and you can edit each value in the procedure editor.",
+    a: "Use the instructions from your pad manufacturer if you have them; they have priority. The presets in the app are usual community procedures, and you can edit each value in the procedure editor.",
   },
 ];
 
 export default function Support() {
   return (
-    <main className="mx-auto max-w-3xl px-5">
-      <div className="label mb-2 mt-4">Support</div>
-      <h1 className="text-3xl font-extrabold tracking-tight">Support</h1>
+    <main className="doc nd-hero">
+      <div className="nd-wrap">
+      <p className="nd-eyebrow">Support</p>
+      <h1>Support</h1>
 
-      <div className="mt-6 rounded-2xl border border-line bg-surface p-5">
+      <div className="callout">
         <p>
           <strong>To get help:</strong> open an issue on{" "}
-          <a className="text-ember" href="https://github.com/nicglazkov/brake-bedding/issues">
+          <a href="https://github.com/nicglazkov/brake-bedding/issues">
             GitHub
           </a>
           . On iOS, you can also send feedback directly from TestFlight.
         </p>
       </div>
 
-      <h2 className="mt-10 text-xl font-bold">Common questions</h2>
-      <div className="mt-4 space-y-6">
+      <h2>Common questions</h2>
+      <div>
         {faq.map((item) => (
           <div key={item.q}>
-            <h3 className="font-bold">{item.q}</h3>
-            <p className="mt-1 text-muted-fg">{item.a}</p>
+            <h3>{item.q}</h3>
+            <p>{item.a}</p>
           </div>
         ))}
       </div>
 
-      <h2 className="mt-10 text-xl font-bold">How do I install the app?</h2>
-      <p className="mt-2 text-muted-fg">
+      <h2>How do I install the app?</h2>
+      <p>
         Android: download the APK from the{" "}
-        <a className="text-ember" href="https://github.com/nicglazkov/brake-bedding/releases/latest">
+        <a href="https://github.com/nicglazkov/brake-bedding/releases/latest">
           latest release
         </a>
         . iOS: join through{" "}
-        <a className="text-ember" href="https://testflight.apple.com/join/KDtbBckw">
+        <a href="https://testflight.apple.com/join/KDtbBckw">
           TestFlight
         </a>
         .
       </p>
 
-      <h2 className="mt-10 text-xl font-bold">Feedback and defects</h2>
-      <p className="mt-2 text-muted-fg">
+      <h2>Feedback and defects</h2>
+      <p>
         A clear report helps: the device, the app version (in Settings → About),
         what you did, and what the app did. On iOS, you can also send feedback with
         a screenshot directly from TestFlight.
       </p>
+      </div>
     </main>
   );
 }
